@@ -33,13 +33,20 @@ function topoSortMutations() {
 const MUTATIONS_ORDERED = topoSortMutations();
 
 // --- état des cases (sauvegardé localement) ---
+// 0 = pas sur le jardin · 1 = sur le jardin (pas débloquée) · 2 = débloquée
 function loadChecked() {
+  const init = {};
+  PLANTS.forEach(p => { init[p.en] = p.checked ? 2 : 0; });
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (saved && typeof saved === "object") return saved;
+    if (saved && typeof saved === "object") {
+      Object.keys(saved).forEach(en => {
+        const v = saved[en];
+        // migration : ancien format booléen -> 0/2
+        init[en] = v === true ? 2 : v === false ? 0 : (Number(v) || 0);
+      });
+    }
   } catch (_) {}
-  const init = {};
-  PLANTS.forEach(p => { init[p.en] = !!p.checked; });
   return init;
 }
 function saveChecked(state) {
@@ -49,6 +56,10 @@ function saveChecked(state) {
 let checkedState = loadChecked();
 let currentFilter = "all";
 let currentSearch = "";
+
+// helpers d'état
+function stateOf(en) { return checkedState[en] || 0; }
+function isUnlocked(en) { return stateOf(en) === 2; }
 
 // --- helpers de rendu ---
 function plantName(en) {
@@ -88,12 +99,19 @@ function nodeHTML(en, opts = {}) {
       <span class="node-names"><span class="n-en">${en}</span></span>
     </div></div>`;
   }
-  const checked = !!checkedState[en];
+  const state = stateOf(en);
+  const cls = state === 2 ? "unlocked" : state === 1 ? "planted" : "locked";
+  const icon = state === 2 ? "✅" : state === 1 ? "🟡" : "⬜";
+  const title = state === 2
+    ? "Débloquée — cliquer pour retirer"
+    : state === 1
+      ? "Sur le jardin (pas encore débloquée) — cliquer pour marquer débloquée"
+      : "Pas sur le jardin — cliquer pour la poser";
   const role = opts.role || "";
-  return `<div class="node ${checked ? "unlocked" : "locked"} ${role}" data-en="${en}" tabindex="0" role="button"
-            title="${checked ? "Débloquée — cliquer pour marquer à débloquer" : "À débloquer — cliquer pour marquer débloquée"}">
+  return `<div class="node ${cls} ${role}" data-en="${en}" tabindex="0" role="button"
+            title="${title}">
     <div class="node-body">
-      <span class="node-check">${checked ? "✅" : "⬜"}</span>
+      <span class="node-check">${icon}</span>
       ${qty}
       <img class="node-img" src="${plantImg(en)}" alt="" width="32" height="32" loading="lazy">
       <span class="node-names">
@@ -122,8 +140,8 @@ function chanceLabel(m) {
 // une mutation est "débloquable maintenant" si l'enfant n'est pas encore obtenu
 // et que TOUS ses parents le sont déjà (les parents spéciaux comptent comme dispo)
 function isAvailableNow(m) {
-  if (checkedState[m.child]) return false;
-  return m.parents.every(p => p.special || checkedState[p.en]);
+  if (isUnlocked(m.child)) return false;
+  return m.parents.every(p => p.special || isUnlocked(p.en));
 }
 
 function recipeHTML(m, step) {
@@ -164,9 +182,9 @@ function recipeMatchesSearch(m) {
 
 function recipeMatchesFilter(m) {
   if (currentFilter === "all") return true;
-  const childChecked = !!checkedState[m.child];
-  if (currentFilter === "unlocked") return childChecked;
-  if (currentFilter === "locked") return !childChecked;
+  const childUnlocked = isUnlocked(m.child);
+  if (currentFilter === "unlocked") return childUnlocked;
+  if (currentFilter === "locked") return !childUnlocked;
   if (currentFilter === "available") return isAvailableNow(m);
   return true;
 }
@@ -201,7 +219,8 @@ function bindNodes(scope) {
   scope.querySelectorAll(".node[data-en]").forEach(node => {
     const toggle = () => {
       const en = node.dataset.en;
-      checkedState[en] = !checkedState[en];
+      // cycle : 0 (pas sur le jardin) -> 1 (sur le jardin) -> 2 (débloquée) -> 0
+      checkedState[en] = (stateOf(en) + 1) % 3;
       saveChecked(checkedState);
       render(); // re-rendu : un parent débloqué se met à jour partout
     };
@@ -214,7 +233,7 @@ function bindNodes(scope) {
 
 function updateProgress() {
   const total = PLANTS.length;
-  const done = PLANTS.filter(p => checkedState[p.en]).length;
+  const done = PLANTS.filter(p => isUnlocked(p.en)).length;
   const pct = Math.round((done / total) * 100);
   document.getElementById("progress-fill").style.width = pct + "%";
   document.getElementById("progress-text").textContent = `${done} / ${total} débloquées (${pct}%)`;
@@ -315,7 +334,7 @@ document.getElementById("reset").addEventListener("click", () => {
   const start = parseInt(localStorage.getItem(TIMER_KEY), 10);
   if (start) recordTime(Date.now() - start);
   checkedState = {};
-  PLANTS.forEach(p => { checkedState[p.en] = false; });
+  PLANTS.forEach(p => { checkedState[p.en] = 0; });
   saveChecked(checkedState);
   startTimer(); // relance le chronomètre à zéro
   render();

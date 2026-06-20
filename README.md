@@ -23,8 +23,9 @@ start index.html         # Windows
 - **Probabilité de mutation par tick** affichée sur chaque flèche (ex. `0.05`, `0.0007`).
   Les mutations « à la récolte » sont signalées à part.
 - **`3×` / `8×`** = nombre de cases requises pour la recette.
-- **Clique une plante** (parent ou enfant) pour la marquer ✅ débloquée / ⬜ à débloquer —
-  l'état est **sauvegardé** dans le navigateur et se met à jour partout dans l'arbre.
+- **Clique une plante** (parent ou enfant) pour faire défiler 3 états :
+  ⬜ pas sur le jardin → 🟡 sur le jardin (pas encore débloquée) → ✅ débloquée → ⬜…
+  L'état est **sauvegardé** dans le navigateur et se met à jour partout dans l'arbre.
 - **Recherche**, **filtres** (toutes / obtenues / à débloquer) et **barre de progression**.
 
 ## Fichiers

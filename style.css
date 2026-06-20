@@ -293,6 +293,11 @@ main {
   border-left-color: #9a8a6e;
   opacity: .72;
 }
+.node.planted {
+  background: #fbf1d8;
+  border-left-color: #e0a93b; /* ambre : sur le jardin, pas encore débloquée */
+  opacity: .92;
+}
 .node.special {
   background: var(--bg2);
   border-left-color: #6b5a44;
