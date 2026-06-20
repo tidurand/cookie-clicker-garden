@@ -223,10 +223,12 @@ function startTimer() {
 }
 function formatDuration(ms) {
   const totalSec = Math.floor(ms / 1000);
-  const h = String(Math.floor(totalSec / 3600)).padStart(2, "0");
+  const days = Math.floor(totalSec / 86400);
+  const h = String(Math.floor((totalSec % 86400) / 3600)).padStart(2, "0");
   const m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, "0");
   const s = String(totalSec % 60).padStart(2, "0");
-  return `${h}:${m}:${s}`;
+  const prefix = days > 0 ? `${days}j ` : "";
+  return `${prefix}${h}:${m}:${s}`;
 }
 function updateTimer() {
   const el = document.getElementById("timer");
