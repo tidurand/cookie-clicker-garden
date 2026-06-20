@@ -161,11 +161,13 @@ header h1 { margin: 0; font-size: 2rem; }
 .lb-empty { background: none !important; padding: 0 !important; font-size: .85rem; font-style: italic; }
 #reset {
   cursor: pointer; border: none; border-radius: 7px;
+  border-left: 5px solid var(--green); /* vert comme les plantes déjà trouvées */
   padding: .4rem .7rem; background: var(--bg2); color: #e7dcc4;
 }
 #reset:disabled {
   cursor: not-allowed;
-  opacity: .45;
+  opacity: .55;
+  border-left-color: #9a8a6e; /* couleur des plantes pas encore trouvées */
 }
 
 main {
