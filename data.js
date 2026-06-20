@@ -104,7 +104,7 @@ const MUTATIONS = [
   { child: "Cronerice",       row: 0, chance: 0.01,
     parents: [{ en: "Baker's Wheat" }, { en: "Thumbcorn" }] },
   { child: "Gildmillet",      row: 0, chance: 0.03,
-    parents: [{ en: "Baker's Wheat" }, { en: "Cronerice" }] },
+    parents: [{ en: "Thumbcorn" }, { en: "Cronerice" }] },
   { child: "Ordinary Clover", row: 0, chance: 0.03,
     parents: [{ en: "Baker's Wheat" }, { en: "Gildmillet" }] },
   // Trèfle doré : juste après le Trèfle Ordinaire (même parents)
