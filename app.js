@@ -125,8 +125,9 @@ function nodeHTML(en, opts = {}) {
       : "Pas sur le jardin — cliquer pour la poser";
   const role = opts.role || "";
   const rem = remainingMutations(en);
+  const mutCls = state === 2 ? "mc-unlocked" : state === 1 ? "mc-planted" : "mc-locked";
   const mutBadge = rem > 0
-    ? `<span class="mut-count" title="${rem} mutation${rem > 1 ? "s" : ""} encore obtenable${rem > 1 ? "s" : ""} grâce à cette plante">🧬 ${rem}</span>`
+    ? `<span class="mut-count ${mutCls}" title="${rem} mutation${rem > 1 ? "s" : ""} encore obtenable${rem > 1 ? "s" : ""} grâce à cette plante">🧬 ${rem}</span>`
     : "";
   return `<div class="node ${cls} ${role}" data-en="${en}" tabindex="0" role="button"
             title="${title}">

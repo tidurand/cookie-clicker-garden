@@ -338,7 +338,6 @@ main {
   flex: 0 0 auto;
   margin-left: auto;          /* pousse le badge à droite de la pastille */
   align-self: flex-start;
-  background: #8c8c8c; /* gris neutre */
   color: #ffffff;
   font-weight: 800;
   font-size: .72rem;
@@ -346,6 +345,10 @@ main {
   padding: .1rem .45rem;
   white-space: nowrap;
 }
+/* couleur selon l'état de la plante */
+.mut-count.mc-locked  { background: #8c8c8c; color: #fff; }                 /* pas trouvée   */
+.mut-count.mc-planted { background: #e0a93b; color: #2e2113; }             /* trouvée, pas collectée */
+.mut-count.mc-unlocked{ background: var(--green); color: #fff; }           /* collectée     */
 .node-names { display: flex; flex-direction: column; line-height: 1.15; }
 .node.special .n-en { color: #e7dcc4; }
 .n-fr { font-weight: 700; font-size: .9rem; }
