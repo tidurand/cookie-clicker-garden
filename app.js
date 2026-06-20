@@ -137,11 +137,15 @@ function chanceLabel(m) {
   return `<span class="chance" title="Probabilité de mutation par tick (${m.chance})">${formatPct(m.chance)}</span>`;
 }
 
-// une mutation est "débloquable maintenant" si l'enfant n'est pas encore obtenu
-// et que TOUS ses parents le sont déjà (les parents spéciaux comptent comme dispo)
-function isAvailableNow(m) {
-  if (isUnlocked(m.child)) return false;
-  return m.parents.every(p => p.special || isUnlocked(p.en));
+// niveau de "débloquabilité" d'une mutation (enfant pas encore obtenu) :
+//   2 (vert)  = tous les parents sont DÉBLOQUÉS (✅)
+//   1 (jaune) = tous les parents sont au moins SUR LE JARDIN (🟡), mais pas tous débloqués
+//   0         = au moins un parent n'est pas sur le jardin (les spéciaux comptent comme ✅)
+function availabilityLevel(m) {
+  if (isUnlocked(m.child)) return 0;
+  const states = m.parents.map(p => p.special ? 2 : stateOf(p.en));
+  if (states.some(s => s < 1)) return 0;          // un parent absent du jardin
+  return states.every(s => s === 2) ? 2 : 1;       // tous débloqués -> vert, sinon jaune
 }
 
 function recipeHTML(m, step) {
@@ -151,11 +155,14 @@ function recipeHTML(m, step) {
   const note = m.note ? `<div class="note">ℹ️ ${m.note}</div>` : "";
   const stepBadge = step
     ? `<span class="step" title="Ordre de déblocage">${step}</span>` : "";
-  const avail = isAvailableNow(m);
-  const availBadge = avail
-    ? `<span class="avail-badge" title="Tous les parents sont débloqués : tu peux tenter cette mutation maintenant">🌟 Débloquable</span>`
-    : "";
-  return `<div class="recipe ${avail ? "available" : ""}" data-child="${m.child}">
+  const lvl = availabilityLevel(m);
+  const availClass = lvl === 2 ? "available" : lvl === 1 ? "available-soon" : "";
+  const availBadge = lvl === 2
+    ? `<span class="avail-badge" title="Les deux parents sont débloqués : tu peux planter et tenter cette mutation">🌟 Débloquable</span>`
+    : lvl === 1
+      ? `<span class="avail-badge soon" title="Les parents sont sur le jardin (au moins un pas encore débloqué) : la mutation peut apparaître">🟡 Sur le jardin</span>`
+      : "";
+  return `<div class="recipe ${availClass}" data-child="${m.child}">
     ${stepBadge}${availBadge}
     <div class="parents">${parents}</div>
     <div class="link">
@@ -185,7 +192,7 @@ function recipeMatchesFilter(m) {
   const childUnlocked = isUnlocked(m.child);
   if (currentFilter === "unlocked") return childUnlocked;
   if (currentFilter === "locked") return !childUnlocked;
-  if (currentFilter === "available") return isAvailableNow(m);
+  if (currentFilter === "available") return availabilityLevel(m) >= 1;
   return true;
 }
 

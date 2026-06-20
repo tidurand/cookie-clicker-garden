@@ -214,6 +214,13 @@ main {
   0%, 100% { box-shadow: 0 0 0 2px var(--green), 0 0 8px rgba(79, 157, 79, .35); }
   50%      { box-shadow: 0 0 0 2px var(--green), 0 0 18px rgba(79, 157, 79, .7); }
 }
+/* ---- mutation possible bientôt : parents sur le jardin mais pas tous débloqués ---- */
+.recipe.available-soon {
+  background: rgba(224, 169, 59, .16);
+  border-radius: 12px;
+  padding: .4rem .55rem;
+  box-shadow: 0 0 0 2px #e0a93b, 0 0 12px rgba(224, 169, 59, .5);
+}
 .avail-badge {
   flex: 0 0 auto;
   background: var(--green);
@@ -224,6 +231,7 @@ main {
   border-radius: 999px;
   white-space: nowrap;
 }
+.avail-badge.soon { background: #e0a93b; color: #2e2113; }
 
 .step {
   flex: 0 0 auto;
