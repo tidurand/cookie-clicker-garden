@@ -362,7 +362,8 @@ document.getElementById("reset").addEventListener("click", () => {
   const start = parseInt(localStorage.getItem(TIMER_KEY), 10);
   if (start) recordTime(Date.now() - start);
   checkedState = {};
-  PLANTS.forEach(p => { checkedState[p.en] = 0; });
+  // Baker's Wheat est la plante de départ : toujours débloquée, même en recommençant
+  PLANTS.forEach(p => { checkedState[p.en] = p.en === "Baker's Wheat" ? 2 : 0; });
   saveChecked(checkedState);
   startTimer(); // relance le chronomètre à zéro
   render();
