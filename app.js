@@ -1,6 +1,7 @@
 // Diagramme de l'arbre des mutations du jardin de Cookie Clicker
 const STORAGE_KEY = "cc-garden-checked";
 const TIMER_KEY = "cc-garden-timer-start";
+const BEST_KEY = "cc-garden-best-times";
 
 // index rapide nom EN -> plante
 const BY_EN = {};
@@ -230,6 +231,34 @@ if (!localStorage.getItem(TIMER_KEY)) startTimer();
 setInterval(updateTimer, 1000);
 updateTimer();
 
+// --- top 3 des meilleurs temps (les plus courts) ---
+function loadBestTimes() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(BEST_KEY));
+    if (Array.isArray(arr)) return arr.filter(n => typeof n === "number");
+  } catch (_) {}
+  return [];
+}
+function recordTime(ms) {
+  if (!(ms > 0)) return; // ignore les durées nulles/invalides
+  const times = [...loadBestTimes(), ms].sort((a, b) => a - b).slice(0, 3);
+  localStorage.setItem(BEST_KEY, JSON.stringify(times));
+  renderLeaderboard();
+}
+function renderLeaderboard() {
+  const list = document.getElementById("lb-list");
+  const times = loadBestTimes();
+  if (!times.length) {
+    list.innerHTML = `<li class="lb-empty">Aucun temps encore — clique sur « Réinitialiser » pour en enregistrer un.</li>`;
+    return;
+  }
+  const medals = ["🥇", "🥈", "🥉"];
+  list.innerHTML = times
+    .map((ms, i) => `<li><span class="medal">${medals[i] || ""}</span><span class="lb-time">${formatDuration(ms)}</span></li>`)
+    .join("");
+}
+renderLeaderboard();
+
 // --- événements UI ---
 document.getElementById("search").addEventListener("input", e => {
   currentSearch = e.target.value.trim();
@@ -245,6 +274,9 @@ document.querySelectorAll(".filter").forEach(btn => {
 });
 document.getElementById("reset").addEventListener("click", () => {
   if (!confirm("Tout marquer comme « pas encore trouvé » ?")) return;
+  // enregistre le temps du run qui se termine dans le top 3
+  const start = parseInt(localStorage.getItem(TIMER_KEY), 10);
+  if (start) recordTime(Date.now() - start);
   checkedState = {};
   PLANTS.forEach(p => { checkedState[p.en] = false; });
   saveChecked(checkedState);
