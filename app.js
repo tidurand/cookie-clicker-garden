@@ -206,6 +206,14 @@ function updateProgress() {
   const pct = Math.round((done / total) * 100);
   document.getElementById("progress-fill").style.width = pct + "%";
   document.getElementById("progress-text").textContent = `${done} / ${total} débloquées (${pct}%)`;
+
+  // Réinitialiser n'est cliquable que lorsque TOUTES les plantes sont trouvées
+  const resetBtn = document.getElementById("reset");
+  const allDone = done === total;
+  resetBtn.disabled = !allDone;
+  resetBtn.title = allDone
+    ? "Réinitialiser les cases et enregistrer le temps"
+    : `Disponible une fois toutes les plantes trouvées (${total - done} restante${total - done > 1 ? "s" : ""})`;
 }
 
 // --- chronomètre depuis la dernière réinitialisation ---
