@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍪 Jardin Cookie Clicker — Optimisation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🍪 Jardin de Cookie Clicker</h1>
+    <p class="subtitle">Feuille d'optimisation des graines &amp; mutations</p>
+    <p class="legend">
+      Format : <strong>nom anglais / nom français</strong>
+      (<span class="chip">ticks avant maturation</span>)
+      <span class="chip">+ ticks de vie après maturité</span> ·
+      <span class="inf">♾️</span> = immortelle ·
+      <span class="chip">+</span> final = durée notable / récolte
+    </p>
+  </header>
+
+  <div class="toolbar">
+    <input type="search" id="search" placeholder="🔎 Rechercher (nom FR ou EN, effet…)">
+    <div class="filters">
+      <button class="filter active" data-filter="all">Toutes</button>
+      <button class="filter" data-filter="unlocked">✅ Débloquées</button>
+      <button class="filter" data-filter="locked">⬜ À débloquer</button>
+    </div>
+    <div class="sort">
+      <label>Trier :
+        <select id="sort">
+          <option value="default">Ordre de la feuille</option>
+          <option value="name-fr">Nom (FR)</option>
+          <option value="name-en">Nom (EN)</option>
+          <option value="mature-asc">Maturation ↑</option>
+          <option value="mature-desc">Maturation ↓</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="progress">
+    <div class="progress-bar"><div id="progress-fill"></div></div>
+    <span id="progress-text"></span>
+    <button id="reset" title="Réinitialiser les cases">↺ Réinitialiser</button>
+  </div>
+
+  <main id="garden"></main>
+
+  <footer>
+    <p>Données : <a href="https://cookieclicker.wiki.gg/wiki/Garden" target="_blank" rel="noopener">Cookie Clicker Wiki — Garden</a>
+       &amp; <a href="https://cookieclicker.wiki.gg/wiki/Garden_Strategies" target="_blank" rel="noopener">Garden Strategies</a>.
+       État des cases sauvegardé localement dans votre navigateur.</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
