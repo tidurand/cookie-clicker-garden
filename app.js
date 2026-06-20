@@ -1,5 +1,6 @@
 // Diagramme de l'arbre des mutations du jardin de Cookie Clicker
 const STORAGE_KEY = "cc-garden-checked";
+const TIMER_KEY = "cc-garden-timer-start";
 
 // index rapide nom EN -> plante
 const BY_EN = {};
@@ -206,6 +207,29 @@ function updateProgress() {
   document.getElementById("progress-text").textContent = `${done} / ${total} débloquées (${pct}%)`;
 }
 
+// --- chronomètre depuis la dernière réinitialisation ---
+function startTimer() {
+  localStorage.setItem(TIMER_KEY, Date.now().toString());
+  updateTimer();
+}
+function formatDuration(ms) {
+  const totalSec = Math.floor(ms / 1000);
+  const h = String(Math.floor(totalSec / 3600)).padStart(2, "0");
+  const m = String(Math.floor((totalSec % 3600) / 60)).padStart(2, "0");
+  const s = String(totalSec % 60).padStart(2, "0");
+  return `${h}:${m}:${s}`;
+}
+function updateTimer() {
+  const el = document.getElementById("timer");
+  const start = parseInt(localStorage.getItem(TIMER_KEY), 10);
+  if (!start) { el.textContent = "⏱️ --:--:--"; return; }
+  el.textContent = "⏱️ " + formatDuration(Date.now() - start);
+}
+// démarre le chrono au premier chargement s'il n'existe pas encore
+if (!localStorage.getItem(TIMER_KEY)) startTimer();
+setInterval(updateTimer, 1000);
+updateTimer();
+
 // --- événements UI ---
 document.getElementById("search").addEventListener("input", e => {
   currentSearch = e.target.value.trim();
@@ -224,6 +248,7 @@ document.getElementById("reset").addEventListener("click", () => {
   checkedState = {};
   PLANTS.forEach(p => { checkedState[p.en] = false; });
   saveChecked(checkedState);
+  startTimer(); // relance le chronomètre à zéro
   render();
 });
 
