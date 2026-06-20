@@ -158,6 +158,11 @@ header h1 { margin: 0; font-size: 2rem; }
   font-size: 1.05rem;
   color: #f6ecd9;
 }
+.leaderboard .lb-date {
+  font-size: .78rem;
+  color: #cbb893;
+  margin-left: .15rem;
+}
 .lb-empty { background: none !important; padding: 0 !important; font-size: .85rem; font-style: italic; }
 #reset {
   cursor: pointer; border: none; border-radius: 7px;
@@ -197,6 +202,29 @@ main {
   flex-wrap: wrap;
   position: relative;
 }
+/* ---- mutation débloquable maintenant (tous les parents obtenus) ---- */
+.recipe.available {
+  background: rgba(79, 157, 79, .18);
+  border-radius: 12px;
+  padding: .4rem .55rem;
+  box-shadow: 0 0 0 2px var(--green), 0 0 14px rgba(79, 157, 79, .55);
+  animation: avail-pulse 1.8s ease-in-out infinite;
+}
+@keyframes avail-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px var(--green), 0 0 8px rgba(79, 157, 79, .35); }
+  50%      { box-shadow: 0 0 0 2px var(--green), 0 0 18px rgba(79, 157, 79, .7); }
+}
+.avail-badge {
+  flex: 0 0 auto;
+  background: var(--green);
+  color: #fff;
+  font-weight: 700;
+  font-size: .72rem;
+  padding: .15rem .5rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
 .step {
   flex: 0 0 auto;
   width: 1.7rem;

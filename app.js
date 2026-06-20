@@ -119,6 +119,13 @@ function chanceLabel(m) {
   return `<span class="chance" title="Probabilité de mutation par tick (${m.chance})">${formatPct(m.chance)}</span>`;
 }
 
+// une mutation est "débloquable maintenant" si l'enfant n'est pas encore obtenu
+// et que TOUS ses parents le sont déjà (les parents spéciaux comptent comme dispo)
+function isAvailableNow(m) {
+  if (checkedState[m.child]) return false;
+  return m.parents.every(p => p.special || checkedState[p.en]);
+}
+
 function recipeHTML(m, step) {
   const parents = m.parents
     .map(par => nodeHTML(par.en, { qty: par.qty, role: "parent" }))
@@ -126,8 +133,12 @@ function recipeHTML(m, step) {
   const note = m.note ? `<div class="note">ℹ️ ${m.note}</div>` : "";
   const stepBadge = step
     ? `<span class="step" title="Ordre de déblocage">${step}</span>` : "";
-  return `<div class="recipe" data-child="${m.child}">
-    ${stepBadge}
+  const avail = isAvailableNow(m);
+  const availBadge = avail
+    ? `<span class="avail-badge" title="Tous les parents sont débloqués : tu peux tenter cette mutation maintenant">🌟 Débloquable</span>`
+    : "";
+  return `<div class="recipe ${avail ? "available" : ""}" data-child="${m.child}">
+    ${stepBadge}${availBadge}
     <div class="parents">${parents}</div>
     <div class="link">
       <span class="arrow">→</span>
@@ -156,6 +167,7 @@ function recipeMatchesFilter(m) {
   const childChecked = !!checkedState[m.child];
   if (currentFilter === "unlocked") return childChecked;
   if (currentFilter === "locked") return !childChecked;
+  if (currentFilter === "available") return isAvailableNow(m);
   return true;
 }
 
@@ -242,18 +254,29 @@ setInterval(updateTimer, 1000);
 updateTimer();
 
 // --- top 3 des meilleurs temps (les plus courts) ---
+// format stocké : [{ ms, date }] (ancien format = simple nombre, migré à la volée)
 function loadBestTimes() {
   try {
     const arr = JSON.parse(localStorage.getItem(BEST_KEY));
-    if (Array.isArray(arr)) return arr.filter(n => typeof n === "number");
+    if (Array.isArray(arr)) {
+      return arr
+        .map(e => typeof e === "number" ? { ms: e, date: null } : e)
+        .filter(e => e && typeof e.ms === "number");
+    }
   } catch (_) {}
   return [];
 }
 function recordTime(ms) {
   if (!(ms > 0)) return; // ignore les durées nulles/invalides
-  const times = [...loadBestTimes(), ms].sort((a, b) => a - b).slice(0, 3);
+  const times = [...loadBestTimes(), { ms, date: Date.now() }]
+    .sort((a, b) => a.ms - b.ms)
+    .slice(0, 3);
   localStorage.setItem(BEST_KEY, JSON.stringify(times));
   renderLeaderboard();
+}
+function formatDate(ts) {
+  if (!ts) return "";
+  return new Date(ts).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" });
 }
 function renderLeaderboard() {
   const list = document.getElementById("lb-list");
@@ -264,7 +287,11 @@ function renderLeaderboard() {
   }
   const medals = ["🥇", "🥈", "🥉"];
   list.innerHTML = times
-    .map((ms, i) => `<li><span class="medal">${medals[i] || ""}</span><span class="lb-time">${formatDuration(ms)}</span></li>`)
+    .map((e, i) => `<li>
+        <span class="medal">${medals[i] || ""}</span>
+        <span class="lb-time">${formatDuration(e.ms)}</span>
+        ${e.date ? `<span class="lb-date" title="Date du record">${formatDate(e.date)}</span>` : ""}
+      </li>`)
     .join("");
 }
 renderLeaderboard();
