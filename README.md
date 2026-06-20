@@ -18,25 +18,26 @@ start index.html         # Windows
 
 ## Fonctionnalités
 
-- **Liste complète des plantes** avec nom anglais / français, dans ton ordre et tes 2 groupes.
-- **Notation reprise de ta feuille** : `(ticks avant maturation)` puis `+ ticks de vie après maturité`.
-  - `♾️` = plante immortelle.
-  - Un `+` final = durée notable / plante à récolter (bonus).
-  - Marqueurs `¹ ² ³ W J` repris de ta feuille (variantes / groupes).
-- **Cases à cocher** pour marquer ce que tu as débloqué — **sauvegardé** dans le navigateur.
-- **Recherche**, **filtres** (toutes / débloquées / à débloquer), **tri** et **barre de progression**.
-- **Bonus depuis le wiki** : effet de chaque plante, recette de mutation (plantes parentes) et coût.
+- **Arbre des mutations** façon diagramme : chaque ligne se lit comme une recette
+  **parent + parent → (probabilité) plante obtenue**, regroupée en chaînes comme ta feuille.
+- **Probabilité de mutation par tick** affichée sur chaque flèche (ex. `0.05`, `0.0007`).
+  Les mutations « à la récolte » sont signalées à part.
+- **`3×` / `8×`** = nombre de cases requises pour la recette.
+- **Clique une plante** (parent ou enfant) pour la marquer ✅ débloquée / ⬜ à débloquer —
+  l'état est **sauvegardé** dans le navigateur et se met à jour partout dans l'arbre.
+- **Recherche**, **filtres** (toutes / obtenues / à débloquer) et **barre de progression**.
 
 ## Fichiers
 
-| Fichier      | Rôle                                            |
-|--------------|-------------------------------------------------|
-| `index.html` | Structure de la page                            |
-| `style.css`  | Thème jardin / terre                            |
-| `app.js`     | Affichage, filtres, recherche, sauvegarde       |
-| `data.js`    | **Toutes les données des plantes** (à éditer)   |
+| Fichier      | Rôle                                                        |
+|--------------|-------------------------------------------------------------|
+| `index.html` | Structure de la page                                        |
+| `style.css`  | Thème jardin / terre + styles du diagramme                  |
+| `app.js`     | Construction du diagramme, filtres, recherche, sauvegarde   |
+| `data.js`    | **Plantes** (`PLANTS`) **et recettes de mutation** (`MUTATIONS`) |
+| `img/`       | Sprites des graines (1 PNG par plante, depuis le wiki)      |
 
-Pour ajuster une valeur (ticks, effet…), modifie `data.js`.
+Pour ajuster une recette (parents, probabilité…), modifie le tableau `MUTATIONS` dans `data.js`.
 
 ## Sources
 

@@ -18,10 +18,14 @@ body {
   margin: 0;
   font-family: "Segoe UI", system-ui, sans-serif;
   color: var(--ink);
+  /* fond = texture de terre du mini-jeu jardin de Cookie Clicker
+     (léger voile sombre par-dessus pour garder le texte clair lisible) */
   background:
-    radial-gradient(circle at 20% 0%, #4a3322 0%, transparent 40%),
-    radial-gradient(circle at 80% 10%, #4a3322 0%, transparent 35%),
-    var(--bg);
+    linear-gradient(rgba(20,12,6,.45), rgba(20,12,6,.55)),
+    url("img/garden-bg.jpg");
+  background-repeat: repeat;
+  background-size: auto;
+  background-attachment: fixed;
   min-height: 100vh;
   padding-bottom: 3rem;
 }
@@ -32,6 +36,12 @@ header {
   color: #f6ecd9;
 }
 header h1 { margin: 0; font-size: 2rem; }
+.title-cookie {
+  height: 1em;
+  width: 1em;
+  vertical-align: -0.15em; /* aligne le cookie sur la ligne de base du texte */
+  object-fit: contain;
+}
 .subtitle { margin: .25rem 0 1rem; color: #d8c4a0; }
 .legend {
   max-width: 760px;
@@ -113,64 +123,149 @@ header h1 { margin: 0; font-size: 2rem; }
 }
 
 main {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
 }
-.group-title {
-  color: #f6ecd9;
-  border-bottom: 2px solid var(--accent);
-  padding-bottom: .3rem;
-  margin: 1.5rem 0 1rem;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: .9rem;
+
+/* ---- une "chaîne" = un groupe de recettes liées (façon feuille) ---- */
+.chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 1.1rem;
+  padding: 1rem;
+  margin: 0 0 1rem;
+  background: rgba(0,0,0,.18);
+  border-radius: 14px;
+  border-left: 4px solid var(--accent);
 }
 
-.card {
-  background: var(--card);
-  border-radius: 12px;
-  padding: .9rem 1rem;
-  box-shadow: var(--shadow);
-  border-left: 6px solid var(--green);
-  transition: transform .12s ease, opacity .2s;
+/* ---- une recette : parents + flèche/proba + enfant ---- */
+.recipe {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  flex-wrap: wrap;
+  position: relative;
 }
-.card:hover { transform: translateY(-2px); }
-.card.locked {
+.step {
+  flex: 0 0 auto;
+  width: 1.7rem;
+  height: 1.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg2);
+  color: #f6ecd9;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  font-size: .8rem;
+  font-weight: 700;
+}
+.parents {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+}
+.plus {
+  color: #f6ecd9;
+  font-weight: 800;
+  font-size: 1.1rem;
+  padding: 0 .1rem;
+}
+.link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 54px;
+}
+.arrow { color: var(--accent); font-size: 1.4rem; line-height: 1; }
+.chance {
+  background: var(--accent);
+  color: #2e2113;
+  font-weight: 700;
+  font-size: .78rem;
+  padding: .05rem .4rem;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.note {
+  flex-basis: 100%;
+  font-size: .76rem;
+  color: #d8c4a0;
+  font-style: italic;
+  margin-top: .1rem;
+}
+
+/* ---- un nœud plante (parent ou enfant), cliquable ---- */
+.node {
+  background: var(--card);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  border-left: 5px solid var(--green);
+  cursor: pointer;
+  transition: transform .12s ease, opacity .2s, box-shadow .12s;
+  user-select: none;
+}
+.node:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,.35); }
+.node:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.node.child { border-left-color: var(--accent); }
+.node.locked {
   background: var(--card-locked);
   border-left-color: #9a8a6e;
-  opacity: .78;
+  opacity: .72;
 }
-.card-head {
+.node.special {
+  background: var(--bg2);
+  border-left-color: #6b5a44;
+  cursor: default;
+}
+.node.special:hover { transform: none; box-shadow: var(--shadow); }
+.node-body {
   display: flex;
-  align-items: flex-start;
-  gap: .6rem;
+  align-items: center;
+  gap: .4rem;
+  padding: .4rem .6rem;
 }
-.card-head input { width: 20px; height: 20px; margin-top: 2px; cursor: pointer; flex: 0 0 auto; }
-.names { flex: 1; }
-.name-en { font-weight: 700; font-size: 1.02rem; }
-.marker {
-  display: inline-block; background: var(--bg2); color: #f6ecd9;
-  border-radius: 5px; padding: 0 .35rem; font-size: .75rem; margin-right: .3rem;
-  vertical-align: middle;
+.node-check { font-size: .9rem; }
+.node-img {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated; /* garde le rendu net des sprites */
+  flex: 0 0 auto;
 }
-.name-fr { color: var(--muted); font-size: .9rem; font-style: italic; }
-
-.stats { margin: .55rem 0 .4rem; display: flex; flex-wrap: wrap; gap: .4rem; }
-.stat {
-  background: var(--green-bg);
-  border-radius: 6px;
-  padding: .15rem .5rem;
-  font-size: .8rem;
-  font-weight: 600;
+.node.locked .node-img { filter: grayscale(.6) opacity(.85); }
+.qty {
+  background: #2e2113;
+  color: #f6ecd9;
+  font-weight: 800;
+  font-size: .72rem;
+  border-radius: 5px;
+  padding: 0 .3rem;
 }
-.stat.window { background: #fdeccb; }
-.stat.immortal { background: #e6dcff; }
-
-.detail { font-size: .82rem; color: var(--muted); margin: .2rem 0; line-height: 1.35; }
-.detail b { color: var(--ink); }
+.node-names { display: flex; flex-direction: column; line-height: 1.15; }
+.node.special .n-en { color: #e7dcc4; }
+.n-en { font-weight: 700; font-size: .9rem; }
+.n-fr { color: var(--muted); font-size: .75rem; font-style: italic; }
+.ticks {
+  display: flex;
+  gap: .25rem;
+  margin-top: .15rem;
+}
+.tick {
+  font-size: .68rem;
+  font-weight: 700;
+  padding: 0 .3rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.tick.mature { background: var(--green-bg); color: #2e5c2e; }
+.tick.life { background: #fdeccb; color: #6b4a12; }
+.tick.immortal { background: #e6dcff; color: #4a2e7a; }
+.tick.modif { background: #d4e8f5; color: #1d4a6b; }
+.node.locked .tick { opacity: .8; }
 
 footer {
   max-width: 760px;

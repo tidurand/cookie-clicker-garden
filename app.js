@@ -1,5 +1,34 @@
-// Logique d'affichage du jardin
+// Diagramme de l'arbre des mutations du jardin de Cookie Clicker
 const STORAGE_KEY = "cc-garden-checked";
+
+// index rapide nom EN -> plante
+const BY_EN = {};
+PLANTS.forEach(p => { BY_EN[p.en] = p; });
+
+// --- ordre topologique : un enfant n'apparaît qu'une fois tous ses parents
+//     déjà obtenus (dans l'ordre où tu peux réellement les débloquer) ---
+function topoSortMutations() {
+  const produced = new Set(MUTATIONS.map(m => m.child));
+  // parents jamais produits = plantes de départ (racines, déjà disponibles)
+  const available = new Set();
+  MUTATIONS.forEach(m => m.parents.forEach(p => {
+    if (!p.special && !produced.has(p.en)) available.add(p.en);
+  }));
+
+  const ordered = [];
+  const remaining = [...MUTATIONS];
+  let guard = 0;
+  while (remaining.length && guard++ < 500) {
+    const i = remaining.findIndex(m =>
+      m.parents.every(p => p.special || available.has(p.en)));
+    if (i < 0) { ordered.push(...remaining); break; } // cycle éventuel : on garde l'ordre source
+    const m = remaining.splice(i, 1)[0];
+    ordered.push(m);
+    available.add(m.child);
+  }
+  return ordered;
+}
+const MUTATIONS_ORDERED = topoSortMutations();
 
 // --- état des cases (sauvegardé localement) ---
 function loadChecked() {
@@ -7,7 +36,6 @@ function loadChecked() {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (saved && typeof saved === "object") return saved;
   } catch (_) {}
-  // par défaut : valeurs "checked" de data.js
   const init = {};
   PLANTS.forEach(p => { init[p.en] = !!p.checked; });
   return init;
@@ -18,96 +46,156 @@ function saveChecked(state) {
 
 let checkedState = loadChecked();
 let currentFilter = "all";
-let currentSort = "default";
 let currentSearch = "";
 
-// --- rendu ---
-function maturePill(p) {
-  return `<span class="stat" title="Ticks avant maturation">🌱 ${p.mature}/tick</span>`;
+// --- helpers de rendu ---
+function plantName(en) {
+  const p = BY_EN[en];
+  return p ? `${p.en} / ${p.fr}` : en;
 }
-function windowPill(p) {
-  if (p.window === -1) {
-    return `<span class="stat immortal" title="Ne meurt jamais">♾️ immortelle${p.modif ? " +" : ""}</span>`;
+
+// nom EN -> fichier image local (img/<slug>.png)
+function plantImg(en) {
+  const slug = en.toLowerCase()
+    .replace(/'/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  return `img/${slug}.png`;
+}
+
+// ticks de maturation / de vie après maturité
+function statsHTML(p) {
+  const kind = p.fungus ? "🍄" : "🌱";
+  const kindTitle = p.fungus ? "Champignon" : "Plante";
+  const mature = `<span class="tick mature" title="${kindTitle} — ticks avant maturation">${kind} ${p.mature}</span>`;
+  const life = p.window === -1
+    ? `<span class="tick immortal" title="Ne meurt jamais">♾️</span>`
+    : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
+  const modif = p.modif
+    ? `<span class="tick modif" title="Durée notable / modifiable">🔄</span>` : "";
+  return `<span class="ticks">${mature}${life}${modif}</span>`;
+}
+
+// pastille "plante" (parent ou enfant) cliquable comme case à cocher
+function nodeHTML(en, opts = {}) {
+  const p = BY_EN[en];
+  const qty = opts.qty && opts.qty > 1 ? `<span class="qty">${opts.qty}×</span>` : "";
+  if (!p) {
+    // parent spécial (cases vides, etc.)
+    return `<div class="node special"><div class="node-body">
+      <span class="node-names"><span class="n-en">${en}</span></span>
+    </div></div>`;
   }
-  return `<span class="stat window" title="Ticks de vie après maturité avant disparition">+${p.window}${p.modif ? "+" : ""}</span>`;
+  const checked = !!checkedState[en];
+  const role = opts.role || "";
+  return `<div class="node ${checked ? "unlocked" : "locked"} ${role}" data-en="${en}" tabindex="0" role="button"
+            title="${checked ? "Débloquée — cliquer pour marquer à débloquer" : "À débloquer — cliquer pour marquer débloquée"}">
+    <div class="node-body">
+      <span class="node-check">${checked ? "✅" : "⬜"}</span>
+      ${qty}
+      <img class="node-img" src="${plantImg(en)}" alt="" width="32" height="32" loading="lazy">
+      <span class="node-names">
+        <span class="n-en">${p.en}</span>
+        <span class="n-fr">${p.fr}</span>
+        ${statsHTML(p)}
+      </span>
+    </div>
+  </div>`;
 }
 
-function cardHTML(p) {
-  const checked = checkedState[p.en];
-  const marker = p.marker ? `<span class="marker">${p.marker}</span>` : "";
-  return `
-    <div class="card ${checked ? "" : "locked"}" data-en="${p.en}">
-      <div class="card-head">
-        <input type="checkbox" ${checked ? "checked" : ""} aria-label="Débloquée">
-        <div class="names">
-          <div class="name-en">${marker}${p.en}</div>
-          <div class="name-fr">${p.fr}</div>
-        </div>
-      </div>
-      <div class="stats">${maturePill(p)} ${windowPill(p)}</div>
-      <p class="detail"><b>Effet :</b> ${p.effect}</p>
-      <p class="detail"><b>Mutation :</b> ${p.mutation}</p>
-      <p class="detail"><b>Coût :</b> ${p.cost}</p>
-    </div>`;
+function formatPct(chance) {
+  // 0.01 -> "1%", 0.0007 -> "0.07%" (sans zéros superflus)
+  const pct = chance * 100;
+  const str = Number(pct.toFixed(4)).toString(); // évite 0.07000000001
+  return str + "%";
 }
 
-function matchesFilter(p) {
-  if (currentFilter === "unlocked") return checkedState[p.en];
-  if (currentFilter === "locked") return !checkedState[p.en];
-  return true;
+function chanceLabel(m) {
+  if (m.chance === null || m.chance === undefined) {
+    return `<span class="chance harvest">à la récolte</span>`;
+  }
+  return `<span class="chance" title="Probabilité de mutation par tick (${m.chance})">${formatPct(m.chance)}</span>`;
 }
-function matchesSearch(p) {
+
+function recipeHTML(m, step) {
+  const parents = m.parents
+    .map(par => nodeHTML(par.en, { qty: par.qty, role: "parent" }))
+    .join(`<span class="plus">+</span>`);
+  const note = m.note ? `<div class="note">ℹ️ ${m.note}</div>` : "";
+  const stepBadge = step
+    ? `<span class="step" title="Ordre de déblocage">${step}</span>` : "";
+  return `<div class="recipe" data-child="${m.child}">
+    ${stepBadge}
+    <div class="parents">${parents}</div>
+    <div class="link">
+      <span class="arrow">→</span>
+      ${chanceLabel(m)}
+    </div>
+    <div class="child">${nodeHTML(m.child, { role: "child" })}</div>
+    ${note}
+  </div>`;
+}
+
+// --- filtres / recherche ---
+function recipeMatchesSearch(m) {
   if (!currentSearch) return true;
   const q = currentSearch.toLowerCase();
-  return [p.en, p.fr, p.effect, p.mutation].some(s => s.toLowerCase().includes(q));
+  // recherche uniquement sur les noms FR et EN (enfant + parents)
+  const names = [m.child, ...m.parents.map(p => p.en)];
+  const haystack = names.flatMap(en => {
+    const p = BY_EN[en];
+    return p ? [p.en, p.fr] : [en];
+  });
+  return haystack.some(s => s && s.toLowerCase().includes(q));
 }
 
-function sortPlants(list) {
-  const arr = [...list];
-  switch (currentSort) {
-    case "name-fr": return arr.sort((a, b) => a.fr.localeCompare(b.fr, "fr"));
-    case "name-en": return arr.sort((a, b) => a.en.localeCompare(b.en, "en"));
-    case "mature-asc": return arr.sort((a, b) => a.mature - b.mature);
-    case "mature-desc": return arr.sort((a, b) => b.mature - a.mature);
-    default: return arr;
-  }
+function recipeMatchesFilter(m) {
+  if (currentFilter === "all") return true;
+  const childChecked = !!checkedState[m.child];
+  if (currentFilter === "unlocked") return childChecked;
+  if (currentFilter === "locked") return !childChecked;
+  return true;
 }
 
+// --- rendu principal ---
 function render() {
   const garden = document.getElementById("garden");
-  const visible = PLANTS.filter(p => matchesFilter(p) && matchesSearch(p));
+  // ordre topologique : les parents apparaissent toujours avant leurs enfants
+  const visible = MUTATIONS_ORDERED.filter(m => recipeMatchesFilter(m) && recipeMatchesSearch(m));
 
   if (!visible.length) {
-    garden.innerHTML = `<p class="empty">Aucune plante ne correspond. 🥀</p>`;
+    garden.innerHTML = `<p class="empty">Aucune mutation ne correspond. 🥀</p>`;
     updateProgress();
     return;
   }
 
-  let html = "";
-  if (currentSort === "default") {
-    // afficher les 2 groupes
-    [1, 2].forEach(g => {
-      const inGroup = sortPlants(visible.filter(p => p.group === g));
-      if (!inGroup.length) return;
-      html += `<h2 class="group-title">${g === 1 ? "🌟 Plantes prioritaires" : "🍄 Autres plantes"}</h2>`;
-      html += `<div class="grid">${inGroup.map(cardHTML).join("")}</div>`;
-    });
-  } else {
-    html += `<div class="grid">${sortPlants(visible).map(cardHTML).join("")}</div>`;
-  }
-  garden.innerHTML = html;
+  // une recette par ligne, dans l'ordre où on peut réellement les débloquer.
+  // le numéro d'étape reflète la position dans l'ordre topologique complet.
+  const stepOf = new Map();
+  MUTATIONS_ORDERED.forEach((m, i) => stepOf.set(m, i + 1));
 
-  // brancher les cases à cocher
-  garden.querySelectorAll(".card input[type=checkbox]").forEach(cb => {
-    cb.addEventListener("change", e => {
-      const en = e.target.closest(".card").dataset.en;
-      checkedState[en] = e.target.checked;
+  const html = visible
+    .map(m => `<div class="chain">${recipeHTML(m, stepOf.get(m))}</div>`)
+    .join("");
+
+  garden.innerHTML = html;
+  bindNodes(garden);
+  updateProgress();
+}
+
+function bindNodes(scope) {
+  scope.querySelectorAll(".node[data-en]").forEach(node => {
+    const toggle = () => {
+      const en = node.dataset.en;
+      checkedState[en] = !checkedState[en];
       saveChecked(checkedState);
-      e.target.closest(".card").classList.toggle("locked", !e.target.checked);
-      updateProgress();
+      render(); // re-rendu : un parent débloqué se met à jour partout
+    };
+    node.addEventListener("click", toggle);
+    node.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
     });
   });
-  updateProgress();
 }
 
 function updateProgress() {
@@ -131,14 +219,10 @@ document.querySelectorAll(".filter").forEach(btn => {
     render();
   });
 });
-document.getElementById("sort").addEventListener("change", e => {
-  currentSort = e.target.value;
-  render();
-});
 document.getElementById("reset").addEventListener("click", () => {
-  if (!confirm("Réinitialiser toutes les cases aux valeurs de départ ?")) return;
+  if (!confirm("Tout marquer comme « pas encore trouvé » ?")) return;
   checkedState = {};
-  PLANTS.forEach(p => { checkedState[p.en] = !!p.checked; });
+  PLANTS.forEach(p => { checkedState[p.en] = false; });
   saveChecked(checkedState);
   render();
 });
