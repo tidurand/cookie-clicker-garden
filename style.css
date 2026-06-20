@@ -338,8 +338,8 @@ main {
   flex: 0 0 auto;
   margin-left: auto;          /* pousse le badge à droite de la pastille */
   align-self: flex-start;
-  background: #9a8a6e; /* gris des plantes pas encore trouvées */
-  color: #f6ecd9;
+  background: #8c8c8c; /* gris neutre */
+  color: #ffffff;
   font-weight: 800;
   font-size: .72rem;
   border-radius: 999px;
