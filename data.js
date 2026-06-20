@@ -17,7 +17,7 @@ const PLANTS = [
     effect: "+2% cookies par clic", mutation: "2× Blé du pâtissier", cost: "5 min de CpS" },
   { en: "Cronerice", fr: "Mégèriz", mature: 70, window: 64, modif: true, marker: "", group: 1, checked: true, fungus: false,
     effect: "+3% CpS des mamies", mutation: "Blé + Maïspouce", cost: "15 min de CpS" },
-  { en: "Gildmillet", fr: "Gildmillet", mature: 14, window: 23, modif: false, marker: "", group: 1, checked: true, fungus: false,
+  { en: "Gildmillet", fr: "Mildoré", mature: 14, window: 23, modif: false, marker: "", group: 1, checked: true, fungus: false,
     effect: "+1% gains cookies dorés, +0,1% durée", mutation: "Mégèriz + Maïspouce", cost: "15 min de CpS" },
   { en: "Ordinary Clover", fr: "Trèfle Ordinaire", mature: 20, window: 38, modif: false, marker: "", group: 1, checked: true, fungus: false,
     effect: "+1% fréquence cookies dorés", mutation: "Blé + Gildmillet", cost: "25 min de CpS" },
