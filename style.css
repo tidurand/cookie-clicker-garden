@@ -85,13 +85,16 @@ header h1 { margin: 0; font-size: 2rem; }
 .sort select { padding: .35rem; border-radius: 6px; border: none; }
 .filter {
   cursor: pointer;
-  border: none;
+  border: 2px solid transparent;
   border-radius: 8px;
   padding: .5rem .8rem;
   font-size: .85rem;
   background: var(--bg2);
   color: #e7dcc4;
 }
+.filter[data-filter="all"]      { border-color: #ffffff; }   /* contour blanc */
+.filter[data-filter="unlocked"] { border-color: var(--green); } /* vert : obtenues */
+.filter[data-filter="locked"]   { border-color: #8c8c8c; }   /* gris : à débloquer */
 .filter.active { background: var(--accent); color: #2e2113; font-weight: 600; }
 
 .progress {
