@@ -342,9 +342,17 @@ function renderLeaderboard() {
       </li>`)
     .join("");
 }
+function clearBestTimes() {
+  localStorage.removeItem(BEST_KEY);
+  renderLeaderboard();
+}
 renderLeaderboard();
 
 // --- événements UI ---
+document.getElementById("lb-clear").addEventListener("click", () => {
+  if (loadBestTimes().length && !confirm("Effacer tous les meilleurs temps ?")) return;
+  clearBestTimes();
+});
 document.getElementById("search").addEventListener("input", e => {
   currentSearch = e.target.value.trim();
   render();
