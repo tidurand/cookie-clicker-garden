@@ -98,6 +98,9 @@ const MUTATIONS = [
   // ===== Chaîne principale (haut) : Blé -> ... -> Ichorpuff =====
   { child: "Thumbcorn",       row: 0, chance: 0.05,
     parents: [{ en: "Baker's Wheat" }, { en: "Baker's Wheat" }] },
+  // Pâtisetille : mêmes parents que Maïspouce (2× Blé), affichée juste en dessous
+  { child: "Bakeberry",       row: 0, chance: 0.001,
+    parents: [{ en: "Baker's Wheat" }, { en: "Baker's Wheat" }] },
   { child: "Cronerice",       row: 0, chance: 0.01,
     parents: [{ en: "Baker's Wheat" }, { en: "Thumbcorn" }] },
   { child: "Gildmillet",      row: 0, chance: 0.03,
@@ -175,9 +178,7 @@ const MUTATIONS = [
   { child: "Chimerose",       row: 8, chance: 0.05,
     parents: [{ en: "Whiskerbloom" }, { en: "Shimmerlily" }] },
 
-  // ===== Chaîne Bakeberry -> Queenbeet -> Duketater -> Shriekbulb =====
-  { child: "Bakeberry",       row: 9, chance: 0.001,
-    parents: [{ en: "Baker's Wheat" }, { en: "Baker's Wheat" }] },
+  // ===== Chaîne Queenbeet -> Duketater -> Shriekbulb (Bakeberry déplacée en haut) =====
   { child: "Queenbeet",       row: 9, chance: 0.01,
     parents: [{ en: "Bakeberry" }, { en: "Chocoroot" }] },
   { child: "Duketater",       row: 9, chance: 0.001,
