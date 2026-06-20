@@ -348,8 +348,8 @@ main {
 }
 .node-names { display: flex; flex-direction: column; line-height: 1.15; }
 .node.special .n-en { color: #e7dcc4; }
-.n-en { font-weight: 700; font-size: .9rem; }
-.n-fr { color: var(--muted); font-size: .75rem; font-style: italic; }
+.n-fr { font-weight: 700; font-size: .9rem; }
+.n-en { color: var(--muted); font-size: .75rem; font-style: italic; }
 .ticks {
   display: flex;
   gap: .25rem;

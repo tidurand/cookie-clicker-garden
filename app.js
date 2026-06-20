@@ -135,8 +135,8 @@ function nodeHTML(en, opts = {}) {
       ${qty}
       <img class="node-img" src="${plantImg(en)}" alt="" width="32" height="32" loading="lazy">
       <span class="node-names">
-        <span class="n-en">${p.en}</span>
         <span class="n-fr">${p.fr}</span>
+        <span class="n-en">${p.en}</span>
         ${statsHTML(p)}
       </span>
       ${mutBadge}
