@@ -334,6 +334,18 @@ main {
   border-radius: 5px;
   padding: 0 .3rem;
 }
+.mut-count {
+  flex: 0 0 auto;
+  margin-left: auto;          /* pousse le badge à droite de la pastille */
+  align-self: flex-start;
+  background: #6a4caf;
+  color: #fff;
+  font-weight: 800;
+  font-size: .72rem;
+  border-radius: 999px;
+  padding: .1rem .45rem;
+  white-space: nowrap;
+}
 .node-names { display: flex; flex-direction: column; line-height: 1.15; }
 .node.special .n-en { color: #e7dcc4; }
 .n-en { font-weight: 700; font-size: .9rem; }

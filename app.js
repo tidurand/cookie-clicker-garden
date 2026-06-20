@@ -7,6 +7,22 @@ const BEST_KEY = "cc-garden-best-times";
 const BY_EN = {};
 PLANTS.forEach(p => { BY_EN[p.en] = p; });
 
+// index : plante -> liste des enfants qu'elle permet d'obtenir (en tant que parent)
+// un parent dupliqué dans une même recette (ex. 2× Blé) n'est compté qu'une fois
+const PARENT_OF = {};
+MUTATIONS.forEach(m => {
+  const seen = new Set();
+  m.parents.forEach(p => {
+    if (p.special || seen.has(p.en)) return;
+    seen.add(p.en);
+    (PARENT_OF[p.en] = PARENT_OF[p.en] || []).push(m.child);
+  });
+});
+// nombre de mutations encore obtenables grâce à cette plante (enfant pas encore débloqué)
+function remainingMutations(en) {
+  return (PARENT_OF[en] || []).filter(child => !isUnlocked(child)).length;
+}
+
 // --- ordre topologique : un enfant n'apparaît qu'une fois tous ses parents
 //     déjà obtenus (dans l'ordre où tu peux réellement les débloquer) ---
 function topoSortMutations() {
@@ -108,6 +124,10 @@ function nodeHTML(en, opts = {}) {
       ? "Sur le jardin (pas encore débloquée) — cliquer pour marquer débloquée"
       : "Pas sur le jardin — cliquer pour la poser";
   const role = opts.role || "";
+  const rem = remainingMutations(en);
+  const mutBadge = rem > 0
+    ? `<span class="mut-count" title="${rem} mutation${rem > 1 ? "s" : ""} encore obtenable${rem > 1 ? "s" : ""} grâce à cette plante">🧬 ${rem}</span>`
+    : "";
   return `<div class="node ${cls} ${role}" data-en="${en}" tabindex="0" role="button"
             title="${title}">
     <div class="node-body">
@@ -119,6 +139,7 @@ function nodeHTML(en, opts = {}) {
         <span class="n-fr">${p.fr}</span>
         ${statsHTML(p)}
       </span>
+      ${mutBadge}
     </div>
   </div>`;
 }
