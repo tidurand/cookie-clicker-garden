@@ -73,7 +73,7 @@ const PLANTS = [
     effect: "+1% gains / fréquence rennes", mutation: "Lys Irisé + Moustafleur", cost: "15 min de CpS" },
   { en: "Duketater", fr: "Ducdeterre", mature: 201, window: 22, modif: true, marker: "", group: 2, checked: false, fungus: false,
     effect: "Récolte → +2 h de CpS", mutation: "2× Bettereine", cost: "480 min de CpS" },
-  { en: "Shriekbulb", fr: "Bulburieur", mature: 17, window: 12, modif: false, marker: "", group: 2, checked: true, fungus: false,
+  { en: "Shriekbulb", fr: "Burburleur", mature: 17, window: 12, modif: false, marker: "", group: 2, checked: true, fungus: false,
     effect: "-2% CpS, entourage 5% moins efficace", mutation: "Ducdeterre / Champipâte / Odeurweiss", cost: "60 min de CpS" },
   { en: "Juicy Queenbeet", fr: "Bettereine juteuse", mature: 1010, window: 240, modif: true, marker: "J", group: 2, checked: false, fungus: false,
     effect: "-10% CpS, entourage 20% moins efficace ; récolte → +1 sucre", mutation: "8× Bettereine autour", cost: "Ne se plante pas" },
