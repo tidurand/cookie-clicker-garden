@@ -96,6 +96,7 @@ header h1 { margin: 0; font-size: 2rem; }
 .filter[data-filter="unlocked"] { background: var(--green); color: #fff; } /* vert : obtenues */
 .filter[data-filter="locked"]   { background: #8c8c8c; color: #fff; }      /* gris : à débloquer */
 .filter.active { font-weight: 700; box-shadow: 0 0 0 3px rgba(0,0,0,.5); } /* halo pour repérer l'actif */
+.filter[data-filter="available"].active { background: var(--accent); color: #2e2113; } /* Débloquables : couleur d'origine */
 
 .progress {
   max-width: 1100px;
