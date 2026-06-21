@@ -285,13 +285,16 @@ function showMutationsFor(en) {
       const parents = m.parents.map(par => {
         const pp = BY_EN[par.en];
         const q = par.qty && par.qty > 1 ? `${par.qty}× ` : "";
-        return q + (pp ? pp.fr : par.en);
+        const img = pp ? `<img class="mm-img" src="${plantImg(par.en)}" alt="" width="22" height="22" loading="lazy">` : "";
+        return `${q}${img}${pp ? pp.fr : par.en}`;
       }).join(" + ");
       const child = BY_EN[m.child] ? BY_EN[m.child].fr : m.child;
+      const childImg = BY_EN[m.child]
+        ? `<img class="mm-img" src="${plantImg(m.child)}" alt="" width="22" height="22" loading="lazy">` : "";
       const chance = m.chance == null ? "à la récolte" : formatPct(m.chance);
       const done = isUnlocked(m.child);
       return `<li class="${done ? "mm-done" : ""}">
-        <span class="mm-recipe">${parents} → <b>${child}</b></span>
+        <span class="mm-recipe">${parents} → ${childImg}<b>${child}</b></span>
         <span class="mm-chance">${chance}</span>
         <span class="mm-state">${done ? "✅" : "⬜"}</span>
       </li>`;

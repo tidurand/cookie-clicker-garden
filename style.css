@@ -458,3 +458,10 @@ footer a { color: var(--accent); }
 .mm-state { font-size: .9rem; }
 .mm-done { opacity: .55; }
 .mm-empty { font-style: italic; color: var(--muted); }
+.mm-img {
+  width: 22px;
+  height: 22px;
+  vertical-align: middle;
+  image-rendering: pixelated;
+  margin: 0 .15rem;
+}
