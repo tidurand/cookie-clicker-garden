@@ -91,12 +91,18 @@ header h1 { margin: 0; font-size: 2rem; }
   font-size: .85rem;
   background: var(--bg2);
   color: #e7dcc4;
+  transition: background .12s, color .12s;
 }
-.filter[data-filter="all"]      { background: #ffffff; color: #2e2113; }   /* blanc */
-.filter[data-filter="unlocked"] { background: var(--green); color: #fff; } /* vert : obtenues */
-.filter[data-filter="locked"]   { background: #8c8c8c; color: #fff; }      /* gris : à débloquer */
-.filter.active { font-weight: 700; box-shadow: 0 0 0 3px rgba(0,0,0,.5); } /* halo pour repérer l'actif */
-.filter[data-filter="available"].active { background: var(--accent); color: #2e2113; } /* Débloquables : couleur d'origine */
+.filter.active { font-weight: 700; }
+/* la couleur n'apparaît qu'au survol ou quand le filtre est actif */
+.filter[data-filter="all"]:hover,
+.filter[data-filter="all"].active       { background: #ffffff; color: #2e2113; }      /* blanc */
+.filter[data-filter="unlocked"]:hover,
+.filter[data-filter="unlocked"].active  { background: var(--green); color: #fff; }    /* vert  */
+.filter[data-filter="available"]:hover,
+.filter[data-filter="available"].active { background: var(--accent); color: #2e2113; } /* doré  */
+.filter[data-filter="locked"]:hover,
+.filter[data-filter="locked"].active    { background: #8c8c8c; color: #fff; }         /* gris  */
 
 .progress {
   max-width: 1100px;
