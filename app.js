@@ -22,6 +22,10 @@ MUTATIONS.forEach(m => {
 function remainingMutations(en) {
   return (PARENT_OF[en] || []).filter(child => !isUnlocked(child)).length;
 }
+// recettes où cette plante est un parent
+function mutationsAsParent(en) {
+  return MUTATIONS.filter(m => m.parents.some(p => !p.special && p.en === en));
+}
 
 // --- ordre topologique : un enfant n'apparaît qu'une fois tous ses parents
 //     déjà obtenus (dans l'ordre où tu peux réellement les débloquer) ---
@@ -127,7 +131,7 @@ function nodeHTML(en, opts = {}) {
   const rem = remainingMutations(en);
   const mutCls = state === 2 ? "mc-unlocked" : state === 1 ? "mc-planted" : "mc-locked";
   const mutBadge = rem > 0
-    ? `<span class="mut-count ${mutCls}" title="${rem} mutation${rem > 1 ? "s" : ""} encore obtenable${rem > 1 ? "s" : ""} grâce à cette plante">🧬 ${rem}</span>`
+    ? `<span class="mut-count ${mutCls}" title="${rem} mutation${rem > 1 ? "s" : ""} encore obtenable${rem > 1 ? "s" : ""} — cliquer pour voir les mutations de cette plante">🧬 ${rem}</span>`
     : "";
   return `<div class="node ${cls} ${role}" data-en="${en}" tabindex="0" role="button"
             title="${title}">
@@ -258,6 +262,45 @@ function bindNodes(scope) {
       if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
     });
   });
+  // clic sur le badge 🧬 -> fenêtre des mutations (sans déclencher le cycle d'état)
+  scope.querySelectorAll(".node[data-en] .mut-count").forEach(badge => {
+    badge.addEventListener("click", e => {
+      e.stopPropagation();
+      showMutationsFor(badge.closest(".node").dataset.en);
+    });
+  });
+}
+
+// --- fenêtre : mutations possibles d'une plante ---
+function showMutationsFor(en) {
+  const p = BY_EN[en];
+  const recipes = mutationsAsParent(en);
+  document.getElementById("mm-title").textContent =
+    `🧬 Mutations possibles avec ${p ? p.fr : en}`;
+  const list = document.getElementById("mm-list");
+  if (!recipes.length) {
+    list.innerHTML = `<li class="mm-empty">Cette plante ne produit aucune mutation.</li>`;
+  } else {
+    list.innerHTML = recipes.map(m => {
+      const parents = m.parents.map(par => {
+        const pp = BY_EN[par.en];
+        const q = par.qty && par.qty > 1 ? `${par.qty}× ` : "";
+        return q + (pp ? pp.fr : par.en);
+      }).join(" + ");
+      const child = BY_EN[m.child] ? BY_EN[m.child].fr : m.child;
+      const chance = m.chance == null ? "à la récolte" : formatPct(m.chance);
+      const done = isUnlocked(m.child);
+      return `<li class="${done ? "mm-done" : ""}">
+        <span class="mm-recipe">${parents} → <b>${child}</b></span>
+        <span class="mm-chance">${chance}</span>
+        <span class="mm-state">${done ? "✅" : "⬜"}</span>
+      </li>`;
+    }).join("");
+  }
+  document.getElementById("mutation-modal").classList.remove("hidden");
+}
+function hideMutationModal() {
+  document.getElementById("mutation-modal").classList.add("hidden");
 }
 
 function updateProgress() {
@@ -349,6 +392,13 @@ function clearBestTimes() {
 renderLeaderboard();
 
 // --- événements UI ---
+document.getElementById("mm-close").addEventListener("click", hideMutationModal);
+document.getElementById("mutation-modal").addEventListener("click", e => {
+  if (e.target.id === "mutation-modal") hideMutationModal(); // clic sur le fond
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") hideMutationModal();
+});
 document.getElementById("lb-clear").addEventListener("click", () => {
   if (loadBestTimes().length && !confirm("Effacer tous les meilleurs temps ?")) return;
   clearBestTimes();
