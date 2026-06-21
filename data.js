@@ -9,7 +9,7 @@
 
 const PLANTS = [
   // ---------- GROUPE 1 ----------
-  { en: "Baker's Wheat", fr: "Blé du pâtissier", mature: 5, window: 8, modif: false, marker: "", group: 1, checked: true, fungus: false,
+  { en: "Baker's Wheat", fr: "Blé du Pâtissier", mature: 5, window: 8, modif: false, marker: "", group: 1, checked: true, fungus: false,
     effect: "+1% CpS", mutation: "Plante de départ", cost: "1 min de CpS" },
   { en: "Bakeberry", fr: "Pâtisetille", mature: 32, window: 35, modif: false, marker: "", group: 1, checked: true, fungus: false,
     effect: "+1% CpS ; récolte → +30 min de CpS", mutation: "2× Blé du pâtissier (rare)", cost: "45 min de CpS" },
@@ -33,17 +33,17 @@ const PLANTS = [
   // ---------- GROUPE 2 ----------
   { en: "Meddleweed", fr: "Indiscrerbe", mature: 4, window: 4, modif: false, marker: "", group: 2, checked: true, fungus: false,
     effect: "Aucun effet ; peut envahir les plantes voisines", mutation: "Apparaît sur les cases vides", cost: "1 min de CpS" },
-  { en: "Brown Mold", fr: "Moisissure brune", mature: 5, window: 3, modif: false, marker: "¹", group: 2, checked: true, fungus: true,
+  { en: "Brown Mold", fr: "Moisissure Brune", mature: 5, window: 3, modif: false, marker: "¹", group: 2, checked: true, fungus: true,
     effect: "-1% CpS ; peut se répandre en mildou blanc", mutation: "Mildou blanc + Moisissure brune", cost: "20 min de CpS" },
   { en: "Crumbspore", fr: "Sporemiette", mature: 14, window: 9, modif: false, marker: "²", group: 2, checked: true, fungus: true,
     effect: "Explose en jusqu'à 1 min de CpS ; peut envahir", mutation: "Apparaît seule / 2× Champipâte", cost: "10 min de CpS" },
-  { en: "White Mildew", fr: "Mildou blanc", mature: 5, window: 3, modif: false, marker: "³", group: 2, checked: true, fungus: true,
+  { en: "White Mildew", fr: "Mildou Blanc", mature: 5, window: 3, modif: false, marker: "³", group: 2, checked: true, fungus: true,
     effect: "+1% CpS ; peut se répandre en moisissure brune", mutation: "Moisissure brune + mildou", cost: "20 min de CpS" },
   { en: "Chocoroot", fr: "Chocoracine", mature: 6, window: 19, modif: false, marker: "¹", group: 2, checked: true, fungus: false,
     effect: "+1% CpS ; récolte → +3 min ; croissance prévisible", mutation: "Blé + Moisissure brune", cost: "15 min de CpS" },
   { en: "Queenbeet", fr: "Bettereine", mature: 64, window: 20, modif: true, marker: "", group: 2, checked: true, fungus: false,
     effect: "+0,3% durée dorés, -2% CpS ; récolte → +1 h de CpS", mutation: "Pâtisetille + Chocoracine", cost: "90 min de CpS" },
-  { en: "White Chocoroot", fr: "Chocoracine blanche", mature: 6, window: 19, modif: false, marker: "W", group: 2, checked: true, fungus: false,
+  { en: "White Chocoroot", fr: "Chocoracine Blanche", mature: 6, window: 19, modif: false, marker: "W", group: 2, checked: true, fungus: false,
     effect: "+1% gains dorés ; récolte → +3 min", mutation: "Chocoracine + Mildou blanc", cost: "15 min de CpS" },
   { en: "Wrinklegill", fr: "Ridegibier", mature: 25, window: 15, modif: false, marker: "²", group: 2, checked: true, fungus: true,
     effect: "Les wrinklers apparaissent 2% plus vite, digèrent 1% de plus", mutation: "Sporemiette + Moisissure brune", cost: "20 min de CpS" },
@@ -75,7 +75,7 @@ const PLANTS = [
     effect: "Récolte → +2 h de CpS", mutation: "2× Bettereine", cost: "480 min de CpS" },
   { en: "Shriekbulb", fr: "Burburleur", mature: 17, window: 12, modif: false, marker: "", group: 2, checked: true, fungus: false,
     effect: "-2% CpS, entourage 5% moins efficace", mutation: "Ducdeterre / Champipâte / Odeurweiss", cost: "60 min de CpS" },
-  { en: "Juicy Queenbeet", fr: "Bettereine juteuse", mature: 1010, window: 240, modif: true, marker: "J", group: 2, checked: false, fungus: false,
+  { en: "Juicy Queenbeet", fr: "Bettereine Juteuse", mature: 1010, window: 240, modif: true, marker: "J", group: 2, checked: false, fungus: false,
     effect: "-10% CpS, entourage 20% moins efficace ; récolte → +1 sucre", mutation: "8× Bettereine autour", cost: "Ne se plante pas" },
   { en: "Everdaisy", fr: "Toujoursguerite", mature: 238, window: -1, modif: true, marker: "", group: 2, checked: false, fungus: false,
     effect: "Zone 3×3 sans mauvaise herbe ; immortelle", mutation: "3× Proprerbe + 3× Odeurweiss", cost: "180 min de CpS" },
