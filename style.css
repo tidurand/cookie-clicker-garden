@@ -44,14 +44,20 @@ header h1 { margin: 0; font-size: 2rem; }
 }
 .subtitle { margin: .25rem 0 1rem; color: #d8c4a0; }
 .legend {
-  max-width: 760px;
-  margin: 0 auto;
-  font-size: .85rem;
+  max-width: 900px;
+  margin: .8rem auto 0;
+  font-size: .82rem;
   color: #e7dcc4;
-  background: rgba(0,0,0,.2);
+  background: rgba(0,0,0,.25);
   padding: .6rem 1rem;
   border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem .9rem;
+  justify-content: center;
 }
+.leg-item { white-space: nowrap; }
+.leg-item b { font-weight: 700; color: #f6ecd9; }
 .chip {
   display: inline-block;
   background: var(--accent);
