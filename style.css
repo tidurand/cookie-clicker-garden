@@ -392,6 +392,7 @@ main {
 .tick.life { background: #fdeccb; color: #6b4a12; }
 .tick.immortal { background: #e6dcff; color: #4a2e7a; }
 .tick.modif { background: #d4e8f5; color: #1d4a6b; }
+.tick.overtake { background: #f6d9d0; color: #7a2912; }
 .node.locked .tick { opacity: .8; }
 
 footer {

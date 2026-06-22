@@ -106,7 +106,9 @@ function statsHTML(p) {
     : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
   const modif = p.modif
     ? `<span class="tick modif" title="Durée notable / modifiable">🔄</span>` : "";
-  return `<span class="ticks">${mature}${life}${modif}</span>`;
+  const overtake = p.overtake
+    ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
+  return `<span class="ticks">${mature}${life}${modif}${overtake}</span>`;
 }
 
 // pastille "plante" (parent ou enfant) cliquable comme case à cocher

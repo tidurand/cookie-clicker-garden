@@ -31,11 +31,11 @@ const PLANTS = [
     effect: "+3% fréquence cookies dorés", mutation: "Blé + Gildmillet (très rare) ou 4× Trèfle", cost: "125 min de CpS" },
 
   // ---------- GROUPE 2 ----------
-  { en: "Meddleweed", fr: "Indiscrerbe", mature: 4, window: 4, modif: false, marker: "", group: 2, checked: true, fungus: false,
+  { en: "Meddleweed", fr: "Indiscrerbe", mature: 4, window: 4, modif: false, marker: "", group: 2, checked: true, fungus: false, overtake: true,
     effect: "Aucun effet ; peut envahir les plantes voisines", mutation: "Apparaît sur les cases vides", cost: "1 min de CpS" },
   { en: "Brown Mold", fr: "Moisissure Brune", mature: 5, window: 3, modif: false, marker: "¹", group: 2, checked: true, fungus: true,
     effect: "-1% CpS ; peut se répandre en mildou blanc", mutation: "Mildou blanc + Moisissure brune", cost: "20 min de CpS" },
-  { en: "Crumbspore", fr: "Sporemiette", mature: 14, window: 9, modif: false, marker: "²", group: 2, checked: true, fungus: true,
+  { en: "Crumbspore", fr: "Sporemiette", mature: 14, window: 9, modif: false, marker: "²", group: 2, checked: true, fungus: true, overtake: true,
     effect: "Explose en jusqu'à 1 min de CpS ; peut envahir", mutation: "Apparaît seule / 2× Champipâte", cost: "10 min de CpS" },
   { en: "White Mildew", fr: "Mildou Blanc", mature: 5, window: 3, modif: false, marker: "³", group: 2, checked: true, fungus: true,
     effect: "+1% CpS ; peut se répandre en moisissure brune", mutation: "Moisissure brune + mildou", cost: "20 min de CpS" },
@@ -53,7 +53,7 @@ const PLANTS = [
     effect: "+4% clics, +1% CpS curseurs, -1% CpS", mutation: "Sporemiette + Maïspouce", cost: "30 min de CpS" },
   { en: "Cheapcap", fr: "Capacher", mature: 3, window: 5, modif: false, marker: "", group: 2, checked: true, fungus: true,
     effect: "Bâtiments 0,2% moins chers", mutation: "Sporemiette + Lys Irisé", cost: "40 min de CpS" },
-  { en: "Doughshroom", fr: "Champipâte", mature: 41, window: 9, modif: false, marker: "²", group: 2, checked: true, fungus: true,
+  { en: "Doughshroom", fr: "Champipâte", mature: 41, window: 9, modif: false, marker: "²", group: 2, checked: true, fungus: true, overtake: true,
     effect: "Explose en jusqu'à 5 min de CpS ; peut envahir", mutation: "2× Sporemiette", cost: "100 min de CpS" },
   { en: "Green Rot", fr: "Vertiture", mature: 4, window: 2, modif: false, marker: "³", group: 2, checked: true, fungus: true,
     effect: "+0,5% durée dorés, +1% fréquence, +1% drops", mutation: "Mildou blanc + Trèfle", cost: "60 min de CpS" },
