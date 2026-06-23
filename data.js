@@ -23,7 +23,7 @@ const PLANTS = [
     effect: "+1% fréquence cookies dorés", mutation: "Blé + Gildmillet", cost: "25 min de CpS" },
   { en: "Shimmerlily", fr: "Lys Irisé", mature: 9, window: 4, modif: false, marker: "", group: 1, checked: true, fungus: false,
     effect: "+1% gains / fréquence / drops cookies dorés", mutation: "Trèfle + Gildmillet", cost: "60 min de CpS" },
-  { en: "Elderwort", fr: "Odeurweiss", mature: 156, window: -1, modif: true, marker: "", group: 1, checked: true, fungus: false,
+  { en: "Elderwort", fr: "Odeurweiss", mature: 156, window: -1, modif: true, marker: "", group: 1, checked: true, fungus: false, scumForce: true,
     effect: "+1% gains/fréquence wrath, +1% CpS mamies ; vieillit l'entourage de 3%", mutation: "Lys Irisé + Mégèriz", cost: "180 min de CpS" },
   { en: "Ichorpuff", fr: "Vesse d'Ichor", mature: 20, window: 38, modif: false, marker: "²", group: 1, checked: true, fungus: true,
     effect: "L'entourage vieillit 2× moins vite, mais 50% moins efficace", mutation: "Odeurweiss + Sporemiette", cost: "120 min de CpS" },
