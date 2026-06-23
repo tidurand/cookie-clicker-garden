@@ -126,7 +126,8 @@ function saveScumGain(p) {
   const avg = r.avg * growthMult;            // gain d'âge moyen par tick (avec bonus)
   const maxGain = Math.ceil(r.max * growthMult); // gain entier max possible en 1 tick
   if (avg <= 0 || maxGain <= 0) return null;
-  const erasedPerTick = maxGain / avg - 1;   // ticks effacés à chaque tick forcé au max
+  // baisse du compteur "mûr dans X ticks" = ceil((MA-âge)/AT_moyen) quand on force le gain max
+  const erasedPerTick = maxGain / avg;
   return { maxGain, avg, erasedPerTick };
 }
 
@@ -141,7 +142,7 @@ function statsHTML(p) {
   const ss = saveScumGain(p);
   const ssTitle = ss
     ? `Multiplicateur ×${fmtNum(growthMult)} : gain réel +0 à +${ss.maxGain}/tick (moyenne ${fmtNum(ss.avg)}). `
-      + `En forçant +${ss.maxGain} au save/reload, chaque tick forcé efface ≈${fmtNum(ss.erasedPerTick)} ticks d'attente. `
+      + `Chaque tick forcé (+${ss.maxGain}) fait baisser le compteur « mûr dans X ticks » d'≈${fmtNum(ss.erasedPerTick)}. `
       + `AT ${p.at}, MA ${p.ma}, mort à 100.`
     : "Durée notable / modifiable";
   const ssBadge = ss ? ` ~${fmtNum(ss.erasedPerTick)} t/tick` : "";
