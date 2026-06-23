@@ -82,6 +82,10 @@ let checkedState = loadChecked();
 let currentFilter = "all";
 let currentSearch = "";
 
+// multiplicateur de croissance (dragon + sol + voisins) appliqué au gain d'âge par tick
+const GROWTH_KEY = "cc-garden-growth-mult";
+let growthMult = parseFloat(localStorage.getItem(GROWTH_KEY)) || 1;
+
 // helpers d'état
 function stateOf(en) { return checkedState[en] || 0; }
 function isUnlocked(en) { return stateOf(en) === 2; }
@@ -112,21 +116,18 @@ function atRange(at) {
 function fmtNum(n) {
   return Number(n.toFixed(2)).toString().replace(".", ",");
 }
-// Mécanique réelle (code du jeu) : âge += randomFloor(ageTick + ageTickR*rand).
-// Le gain par tick est un ENTIER ; en save/reload on force le gain max = ceil(AT_max).
-// "ticks effacés" = ticks d'attente naturelle économisés en forçant ce max.
+// Mécanique réelle (code du jeu) : âge += randomFloor((ageTick + ageTickR*rand) * mult).
+// "mult" = plotBoost × dragonBoost (dragon + sol + voisins). Le gain par tick est ENTIER ;
+// en save/reload on force le gain max = ceil(AT_max * mult).
+// "ticks effacés par tick forcé" = gain_max / gain_moyen − 1.
 function saveScumGain(p) {
   const r = atRange(p.at);
   if (!r || r.avg === 0) return null;
-  const maxGain = Math.ceil(r.max);          // gain entier max possible en 1 tick
-  const speedup = maxGain / r.avg;           // accélération en save-scum (× ticks moyens)
-  let natural = null, best = null, erased = null;
-  if (p.ma) {
-    natural = p.ma / r.avg;                   // ticks moyens pour mûrir (≈ MT du wiki)
-    best = p.ma / maxGain;                     // ticks mini en forçant le max
-    erased = natural - best;                   // ticks effacés au total
-  }
-  return { maxGain, speedup, natural, best, erased };
+  const avg = r.avg * growthMult;            // gain d'âge moyen par tick (avec bonus)
+  const maxGain = Math.ceil(r.max * growthMult); // gain entier max possible en 1 tick
+  if (avg <= 0 || maxGain <= 0) return null;
+  const erasedPerTick = maxGain / avg - 1;   // ticks effacés à chaque tick forcé au max
+  return { maxGain, avg, erasedPerTick };
 }
 
 function statsHTML(p) {
@@ -138,13 +139,12 @@ function statsHTML(p) {
     ? `<span class="tick immortal" title="Ne meurt jamais">♾️</span>`
     : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
   const ss = saveScumGain(p);
-  const erasedPerTick = ss ? ss.speedup - 1 : null; // ticks effacés à chaque tick forcé au max
   const ssTitle = ss
-    ? `randomFloor : chaque tick +0 à +${ss.maxGain} d'âge (moyenne ${fmtNum(atRange(p.at).avg)}/tick). `
-      + `En forçant +${ss.maxGain} au save/reload, chaque tick forcé efface ≈${fmtNum(erasedPerTick)} ticks d'attente. `
+    ? `Multiplicateur ×${fmtNum(growthMult)} : gain réel +0 à +${ss.maxGain}/tick (moyenne ${fmtNum(ss.avg)}). `
+      + `En forçant +${ss.maxGain} au save/reload, chaque tick forcé efface ≈${fmtNum(ss.erasedPerTick)} ticks d'attente. `
       + `AT ${p.at}, MA ${p.ma}, mort à 100.`
     : "Durée notable / modifiable";
-  const ssBadge = erasedPerTick != null ? ` ~${fmtNum(erasedPerTick)} t/tick` : "";
+  const ssBadge = ss ? ` ~${fmtNum(ss.erasedPerTick)} t/tick` : "";
   const modif = p.modif
     ? `<span class="tick modif" title="${ssTitle}">🔄${ssBadge}</span>` : "";
   const overtake = p.overtake
@@ -451,6 +451,14 @@ document.getElementById("lb-clear").addEventListener("click", () => {
 });
 document.getElementById("search").addEventListener("input", e => {
   currentSearch = e.target.value.trim();
+  render();
+});
+const growthInput = document.getElementById("growth-mult");
+growthInput.value = growthMult;
+growthInput.addEventListener("input", e => {
+  const v = parseFloat(e.target.value);
+  growthMult = v > 0 ? v : 1;
+  localStorage.setItem(GROWTH_KEY, growthMult);
   render();
 });
 document.querySelectorAll(".filter").forEach(btn => {
