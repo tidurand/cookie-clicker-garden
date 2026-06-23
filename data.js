@@ -27,7 +27,7 @@ const PLANTS = [
     effect: "+1% gains/fréquence wrath, +1% CpS mamies ; vieillit l'entourage de 3%", mutation: "Lys Irisé + Mégèriz", cost: "180 min de CpS" },
   { en: "Ichorpuff", fr: "Vesse d'Ichor", mature: 20, window: 38, modif: false, marker: "²", group: 1, checked: true, fungus: true,
     effect: "L'entourage vieillit 2× moins vite, mais 50% moins efficace", mutation: "Odeurweiss + Sporemiette", cost: "120 min de CpS" },
-  { en: "Golden Clover", fr: "Trèfle Doré", mature: 5, window: 5, modif: true, marker: "", group: 1, checked: false, fungus: false,
+  { en: "Golden Clover", fr: "Trèfle Doré", mature: 5, window: 5, modif: false, marker: "", group: 1, checked: false, fungus: false,
     effect: "+3% fréquence cookies dorés", mutation: "Blé + Gildmillet (très rare) ou 4× Trèfle", cost: "125 min de CpS" },
 
   // ---------- GROUPE 2 ----------
