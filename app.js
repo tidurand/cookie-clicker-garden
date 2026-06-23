@@ -141,7 +141,10 @@ function statsHTML(p) {
     : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
   const ss = saveScumGain(p);
   const ssBadge = ss ? `<span class="modif-val"> ~${fmtNum(ss.erasedPerTick)} t/tick</span>` : "";
-  const modif = p.modif
+  // 🔄 affiché si le save/reload fait baisser le compteur d'au moins 2 par tick forcé
+  // ET que la plante demande au moins 15 ticks pour mûrir
+  const showScum = ss && ss.erasedPerTick >= 2 && p.mature >= 15;
+  const modif = showScum
     ? `<span class="tick modif">🔄${ssBadge}</span>` : "";
   const overtake = p.overtake
     ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
