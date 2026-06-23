@@ -138,14 +138,13 @@ function statsHTML(p) {
     ? `<span class="tick immortal" title="Ne meurt jamais">♾️</span>`
     : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
   const ss = saveScumGain(p);
+  const erasedPerTick = ss ? ss.speedup - 1 : null; // ticks effacés à chaque tick forcé au max
   const ssTitle = ss
     ? `randomFloor : chaque tick +0 à +${ss.maxGain} d'âge (moyenne ${fmtNum(atRange(p.at).avg)}/tick). `
-      + `En save/reload tu forces +${ss.maxGain} → ×${fmtNum(ss.speedup)} plus rapide`
-      + (ss.erased != null ? `, maturité en ~${Math.round(ss.best)} ticks au lieu de ~${Math.round(ss.natural)} (≈${Math.round(ss.erased)} ticks effacés).` : ".")
-      + ` AT ${p.at}, MA ${p.ma}, mort à 100.`
+      + `En forçant +${ss.maxGain} au save/reload, chaque tick forcé efface ≈${fmtNum(erasedPerTick)} ticks d'attente. `
+      + `AT ${p.at}, MA ${p.ma}, mort à 100.`
     : "Durée notable / modifiable";
-  const ssBadge = ss && ss.erased != null
-    ? ` save-scum ×${fmtNum(ss.speedup)} (~${Math.round(ss.erased)} t)` : "";
+  const ssBadge = erasedPerTick != null ? ` ~${fmtNum(erasedPerTick)} t/tick` : "";
   const modif = p.modif
     ? `<span class="tick modif" title="${ssTitle}">🔄${ssBadge}</span>` : "";
   const overtake = p.overtake
