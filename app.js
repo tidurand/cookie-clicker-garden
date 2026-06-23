@@ -145,7 +145,7 @@ function statsHTML(p) {
       + `Chaque tick forcé (+${ss.maxGain}) fait baisser le compteur « mûr dans X ticks » d'≈${fmtNum(ss.erasedPerTick)}. `
       + `AT ${p.at}, MA ${p.ma}, mort à 100.`
     : "Durée notable / modifiable";
-  const ssBadge = ss ? ` ~${fmtNum(ss.erasedPerTick)} t/tick` : "";
+  const ssBadge = ss ? `<span class="modif-val"> ~${fmtNum(ss.erasedPerTick)} t/tick</span>` : "";
   const modif = p.modif
     ? `<span class="tick modif" title="${ssTitle}">🔄${ssBadge}</span>` : "";
   const overtake = p.overtake
