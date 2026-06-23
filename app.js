@@ -112,11 +112,21 @@ function atRange(at) {
 function fmtNum(n) {
   return Number(n.toFixed(2)).toString().replace(".", ",");
 }
-// gain de maturation par tick exprimé en "ticks équivalents" (1 = tick moyen)
-function ticksPerTick(p) {
+// Mécanique réelle (code du jeu) : âge += randomFloor(ageTick + ageTickR*rand).
+// Le gain par tick est un ENTIER ; en save/reload on force le gain max = ceil(AT_max).
+// "ticks effacés" = ticks d'attente naturelle économisés en forçant ce max.
+function saveScumGain(p) {
   const r = atRange(p.at);
   if (!r || r.avg === 0) return null;
-  return { min: r.min / r.avg, avg: 1, max: r.max / r.avg };
+  const maxGain = Math.ceil(r.max);          // gain entier max possible en 1 tick
+  const speedup = maxGain / r.avg;           // accélération en save-scum (× ticks moyens)
+  let natural = null, best = null, erased = null;
+  if (p.ma) {
+    natural = p.ma / r.avg;                   // ticks moyens pour mûrir (≈ MT du wiki)
+    best = p.ma / maxGain;                     // ticks mini en forçant le max
+    erased = natural - best;                   // ticks effacés au total
+  }
+  return { maxGain, speedup, natural, best, erased };
 }
 
 function statsHTML(p) {
@@ -127,11 +137,17 @@ function statsHTML(p) {
   const life = p.window === -1
     ? `<span class="tick immortal" title="Ne meurt jamais">♾️</span>`
     : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
-  const tpt = ticksPerTick(p);
+  const ss = saveScumGain(p);
+  const ssTitle = ss
+    ? `randomFloor : chaque tick +0 à +${ss.maxGain} d'âge (moyenne ${fmtNum(atRange(p.at).avg)}/tick). `
+      + `En save/reload tu forces +${ss.maxGain} → ×${fmtNum(ss.speedup)} plus rapide`
+      + (ss.erased != null ? `, maturité en ~${Math.round(ss.best)} ticks au lieu de ~${Math.round(ss.natural)} (≈${Math.round(ss.erased)} ticks effacés).` : ".")
+      + ` AT ${p.at}, MA ${p.ma}, mort à 100.`
+    : "Durée notable / modifiable";
+  const ssBadge = ss && ss.erased != null
+    ? ` save-scum ×${fmtNum(ss.speedup)} (~${Math.round(ss.erased)} t)` : "";
   const modif = p.modif
-    ? `<span class="tick modif" title="${tpt
-        ? `Gain de maturation par tick : ${fmtNum(tpt.min)} (min) · 1 (moyen) · ${fmtNum(tpt.max)} (max) ticks équivalents. Save/reload vise le max. AT ${p.at}, MA ${p.ma}.`
-        : "Durée notable / modifiable"}">🔄${tpt ? ` ${fmtNum(tpt.min)}–${fmtNum(tpt.max)} t/tick` : ""}</span>` : "";
+    ? `<span class="tick modif" title="${ssTitle}">🔄${ssBadge}</span>` : "";
   const overtake = p.overtake
     ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
   return `<span class="ticks">${mature}${life}${modif}${overtake}</span>`;
