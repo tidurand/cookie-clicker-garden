@@ -76,7 +76,6 @@ const PLANTS = [
   { en: "Shriekbulb", fr: "Burburleur", mature: 17, window: 12, modif: false, marker: "", group: 2, checked: true, fungus: false,
     effect: "-2% CpS, entourage 5% moins efficace", mutation: "Ducdeterre / Champipâte / Odeurweiss", cost: "60 min de CpS" },
   { en: "Juicy Queenbeet", fr: "Bettereine Juteuse", mature: 1010, window: 240, modif: true, marker: "J", group: 2, checked: false, fungus: false,
-    aging: "11/12 tick : +0 · 1/12 tick : +10 à 13",
     effect: "-10% CpS, entourage 20% moins efficace ; récolte → +1 sucre", mutation: "8× Bettereine autour", cost: "Ne se plante pas" },
   { en: "Everdaisy", fr: "Toujoursguerite", mature: 238, window: -1, modif: true, marker: "", group: 2, checked: false, fungus: false,
     effect: "Zone 3×3 sans mauvaise herbe ; immortelle", mutation: "3× Proprerbe + 3× Odeurweiss", cost: "180 min de CpS" },
@@ -192,3 +191,46 @@ const MUTATIONS = [
     parents: [{ en: "Queenbeet", qty: 8 }],
     note: "8× Bettereine autour d'une case mûre" },
 ];
+
+// ---------------------------------------------------------------------------
+// VIEILLISSEMENT (source : wiki Garden)
+//   at = Age per Tick : âge aléatoire gagné à chaque tick (fourchette)
+//   ma = Mature Age   : âge à atteindre pour être mûre (la plante meurt à 100)
+// Le save/reload re-tire ce gain : le max sautable en 1 tick = borne haute de l'AT.
+// ---------------------------------------------------------------------------
+const AGING = {
+  "Baker's Wheat":   { at: "7-9",       ma: 35 },
+  "Thumbcorn":       { at: "6-8",       ma: 20 },
+  "Cronerice":       { at: "0.4-1.1",   ma: 55 },
+  "Gildmillet":      { at: "2-3.5",     ma: 40 },
+  "Ordinary Clover": { at: "1-2.5",     ma: 35 },
+  "Golden Clover":   { at: "4-16",      ma: 50 },
+  "Shimmerlily":     { at: "5-11",      ma: 70 },
+  "Elderwort":       { at: "0.3-0.8",   ma: 90 },
+  "Bakeberry":       { at: "1-2",       ma: 50 },
+  "Chocoroot":       { at: "4",         ma: 25 },
+  "White Chocoroot": { at: "4",         ma: 25 },
+  "White Mildew":    { at: "8-20",      ma: 70 },
+  "Brown Mold":      { at: "8-20",      ma: 70 },
+  "Meddleweed":      { at: "10-16",     ma: 50 },
+  "Whiskerbloom":    { at: "2-4",       ma: 60 },
+  "Chimerose":       { at: "1-2.5",     ma: 30 },
+  "Nursetulip":      { at: "0.5-2.5",   ma: 60 },
+  "Drowsyfern":      { at: "0.05-0.15", ma: 30 },
+  "Wardlichen":      { at: "5-9",       ma: 65 },
+  "Keenmoss":        { at: "4-9",       ma: 65 },
+  "Queenbeet":       { at: "1-1.4",     ma: 80 },
+  "Juicy Queenbeet": { at: "0.04-0.12", ma: 85 },
+  "Duketater":       { at: "0.4-0.5",   ma: 95 },
+  "Crumbspore":      { at: "3-6",       ma: 65 },
+  "Doughshroom":     { at: "1-3",       ma: 85 },
+  "Glovemorel":      { at: "3-21",      ma: 80 },
+  "Cheapcap":        { at: "6-22",      ma: 40 },
+  "Fool's Bolete":   { at: "5-30",      ma: 50 },
+  "Wrinklegill":     { at: "1-4",       ma: 65 },
+  "Green Rot":       { at: "12-25",     ma: 65 },
+  "Shriekbulb":      { at: "3-4",       ma: 60 },
+  "Tidygrass":       { at: "0.5",       ma: 40 },
+  "Everdaisy":       { at: "0.3",       ma: 75 },
+  "Ichorpuff":       { at: "1-2.5",     ma: 35 },
+};

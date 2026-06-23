@@ -7,6 +7,11 @@ const BEST_KEY = "cc-garden-best-times";
 const BY_EN = {};
 PLANTS.forEach(p => { BY_EN[p.en] = p; });
 
+// fusionne les données de vieillissement (AT = âge/tick, MA = âge à maturité ; mort à 100)
+if (typeof AGING !== "undefined") {
+  PLANTS.forEach(p => { const a = AGING[p.en]; if (a) { p.at = a.at; p.ma = a.ma; } });
+}
+
 // index : plante -> liste des enfants qu'elle permet d'obtenir (en tant que parent)
 // un parent dupliqué dans une même recette (ex. 2× Blé) n'est compté qu'une fois
 const PARENT_OF = {};
@@ -100,12 +105,13 @@ function plantImg(en) {
 function statsHTML(p) {
   const kind = p.fungus ? "🍄" : "🌱";
   const kindTitle = p.fungus ? "Champignon" : "Plante";
-  const mature = `<span class="tick mature" title="${kindTitle} — ticks avant maturation">${kind} ${p.mature}</span>`;
+  const ageInfo = p.ma ? ` · âge à maturité MA ${p.ma} (mort à 100) · gain d'âge/tick AT ${p.at}` : "";
+  const mature = `<span class="tick mature" title="${kindTitle} — ${p.mature} ticks avant maturation${ageInfo}">${kind} ${p.mature}</span>`;
   const life = p.window === -1
     ? `<span class="tick immortal" title="Ne meurt jamais">♾️</span>`
     : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
   const modif = p.modif
-    ? `<span class="tick modif" title="${p.aging ? "Save/reload — vieillissement par tick : " + p.aging : "Durée notable / modifiable"}">🔄</span>` : "";
+    ? `<span class="tick modif" title="${p.at ? `Vieillissement aléatoire : +${p.at} d'âge par tick (AT). Save/reload pour re-tirer ; max ${p.at.split("-").pop()}/tick.` : "Durée notable / modifiable"}">🔄${p.at ? " AT " + p.at : ""}</span>` : "";
   const overtake = p.overtake
     ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
   return `<span class="ticks">${mature}${life}${modif}${overtake}</span>`;
