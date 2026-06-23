@@ -102,6 +102,23 @@ function plantImg(en) {
 }
 
 // ticks de maturation / de vie après maturité
+function atRange(at) {
+  if (at == null) return null;
+  const parts = String(at).split("-").map(Number);
+  const min = parts[0];
+  const max = parts.length > 1 ? parts[1] : parts[0];
+  return { min, max, avg: (min + max) / 2 };
+}
+function fmtNum(n) {
+  return Number(n.toFixed(2)).toString().replace(".", ",");
+}
+// gain de maturation par tick exprimé en "ticks équivalents" (1 = tick moyen)
+function ticksPerTick(p) {
+  const r = atRange(p.at);
+  if (!r || r.avg === 0) return null;
+  return { min: r.min / r.avg, avg: 1, max: r.max / r.avg };
+}
+
 function statsHTML(p) {
   const kind = p.fungus ? "🍄" : "🌱";
   const kindTitle = p.fungus ? "Champignon" : "Plante";
@@ -110,8 +127,11 @@ function statsHTML(p) {
   const life = p.window === -1
     ? `<span class="tick immortal" title="Ne meurt jamais">♾️</span>`
     : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
+  const tpt = ticksPerTick(p);
   const modif = p.modif
-    ? `<span class="tick modif" title="${p.at ? `Vieillissement aléatoire : +${p.at} d'âge par tick (AT). Save/reload pour re-tirer ; max ${p.at.split("-").pop()}/tick.` : "Durée notable / modifiable"}">🔄${p.at ? " AT " + p.at : ""}</span>` : "";
+    ? `<span class="tick modif" title="${tpt
+        ? `Gain de maturation par tick : ${fmtNum(tpt.min)} (min) · 1 (moyen) · ${fmtNum(tpt.max)} (max) ticks équivalents. Save/reload vise le max. AT ${p.at}, MA ${p.ma}.`
+        : "Durée notable / modifiable"}">🔄${tpt ? ` ${fmtNum(tpt.min)}–${fmtNum(tpt.max)} t/tick` : ""}</span>` : "";
   const overtake = p.overtake
     ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
   return `<span class="ticks">${mature}${life}${modif}${overtake}</span>`;
