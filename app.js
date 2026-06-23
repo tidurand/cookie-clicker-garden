@@ -140,14 +140,9 @@ function statsHTML(p) {
     ? `<span class="tick immortal" title="Ne meurt jamais">♾️</span>`
     : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
   const ss = saveScumGain(p);
-  const ssTitle = ss
-    ? `Multiplicateur ×${fmtNum(growthMult)} : gain réel +0 à +${ss.maxGain}/tick (moyenne ${fmtNum(ss.avg)}). `
-      + `Chaque tick forcé (+${ss.maxGain}) fait baisser le compteur « mûr dans X ticks » d'≈${fmtNum(ss.erasedPerTick)}. `
-      + `AT ${p.at}, MA ${p.ma}, mort à 100.`
-    : "Durée notable / modifiable";
   const ssBadge = ss ? `<span class="modif-val"> ~${fmtNum(ss.erasedPerTick)} t/tick</span>` : "";
   const modif = p.modif
-    ? `<span class="tick modif" title="${ssTitle}">🔄${ssBadge}</span>` : "";
+    ? `<span class="tick modif">🔄${ssBadge}</span>` : "";
   const overtake = p.overtake
     ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
   return `<span class="ticks">${mature}${life}${modif}${overtake}</span>`;

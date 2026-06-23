@@ -405,7 +405,7 @@ main {
 .tick.mature { background: var(--green-bg); color: #2e5c2e; }
 .tick.life { background: #fdeccb; color: #6b4a12; }
 .tick.immortal { background: #e6dcff; color: #4a2e7a; }
-.tick.modif { background: #d4e8f5; color: #1d4a6b; cursor: help; }
+.tick.modif { background: #d4e8f5; color: #1d4a6b; }
 /* par défaut seul 🔄 est visible ; le détail apparaît au survol */
 .modif-val { display: none; }
 .tick.modif:hover .modif-val, .tick.modif:focus .modif-val { display: inline; }
