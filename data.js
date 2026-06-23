@@ -76,6 +76,7 @@ const PLANTS = [
   { en: "Shriekbulb", fr: "Burburleur", mature: 17, window: 12, modif: false, marker: "", group: 2, checked: true, fungus: false,
     effect: "-2% CpS, entourage 5% moins efficace", mutation: "Ducdeterre / Champipâte / Odeurweiss", cost: "60 min de CpS" },
   { en: "Juicy Queenbeet", fr: "Bettereine Juteuse", mature: 1010, window: 240, modif: true, marker: "J", group: 2, checked: false, fungus: false,
+    aging: "11/12 tick : +0 · 1/12 tick : +10 à 13",
     effect: "-10% CpS, entourage 20% moins efficace ; récolte → +1 sucre", mutation: "8× Bettereine autour", cost: "Ne se plante pas" },
   { en: "Everdaisy", fr: "Toujoursguerite", mature: 238, window: -1, modif: true, marker: "", group: 2, checked: false, fungus: false,
     effect: "Zone 3×3 sans mauvaise herbe ; immortelle", mutation: "3× Proprerbe + 3× Odeurweiss", cost: "180 min de CpS" },

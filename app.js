@@ -105,7 +105,7 @@ function statsHTML(p) {
     ? `<span class="tick immortal" title="Ne meurt jamais">♾️</span>`
     : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
   const modif = p.modif
-    ? `<span class="tick modif" title="Durée notable / modifiable">🔄</span>` : "";
+    ? `<span class="tick modif" title="${p.aging ? "Save/reload — vieillissement par tick : " + p.aging : "Durée notable / modifiable"}">🔄</span>` : "";
   const overtake = p.overtake
     ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
   return `<span class="ticks">${mature}${life}${modif}${overtake}</span>`;
