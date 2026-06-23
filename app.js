@@ -454,14 +454,6 @@ document.getElementById("search").addEventListener("input", e => {
   currentSearch = e.target.value.trim();
   render();
 });
-const growthInput = document.getElementById("growth-mult");
-growthInput.value = growthMult;
-growthInput.addEventListener("input", e => {
-  const v = parseFloat(e.target.value);
-  growthMult = v > 0 ? v : 1;
-  localStorage.setItem(GROWTH_KEY, growthMult);
-  render();
-});
 document.querySelectorAll(".filter").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
