@@ -45,7 +45,7 @@ header h1 { margin: 0; font-size: 2rem; }
 .subtitle { margin: .25rem 0 1rem; color: #d8c4a0; }
 .legend {
   max-width: 900px;
-  margin: .8rem auto 0;
+  margin: 2rem auto 1rem;
   font-size: .82rem;
   color: #e7dcc4;
   background: rgba(0,0,0,.25);
