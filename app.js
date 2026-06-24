@@ -136,6 +136,20 @@ function saveScumGain(p) {
   return { maxGain, avg, erasedPerTick, erasedMin, erasedMax };
 }
 
+// probabilité qu'un tick fasse avancer l'affichage (gain d'âge >= 1)
+// gain = randomFloor(raw), raw ~ Uniforme[lo, hi]. P(gain=0) n'arrive que si raw<1.
+function chanceProductive(p) {
+  const r = atRange(p.at);
+  if (!r) return null;
+  const lo = r.min * growthMult, hi = r.max * growthMult;
+  if (lo >= 1) return 1;                 // gagne toujours au moins +1
+  if (hi === lo) return lo;              // valeur fixe (ageTickR=0) : P(+1)=lo
+  const upper = Math.min(hi, 1);
+  const integral = (upper - upper * upper / 2) - (lo - lo * lo / 2);
+  const p0 = integral / (hi - lo);       // P(gain = 0)
+  return 1 - p0;
+}
+
 function statsHTML(p) {
   const kind = p.fungus ? "🍄" : "🌱";
   const kindTitle = p.fungus ? "Champignon" : "Plante";
@@ -146,11 +160,11 @@ function statsHTML(p) {
     : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
   const ss = saveScumGain(p);
   const ssRange = ss && ss.erasedMin !== ss.erasedMax ? ` (${ss.erasedMin}–${ss.erasedMax})` : "";
-  const ssBadge = ss ? `<span class="modif-val"> ~${fmtNum(ss.erasedPerTick)} t/tick${ssRange}</span>` : "";
-  // 🔄 affiché si le save/reload fait baisser le compteur d'au moins 2 par tick forcé
-  // ET que la plante demande au moins 15 ticks pour mûrir
-  const showScum = ss && (p.scumForce || (ss.erasedPerTick >= 2 && p.mature >= 15));
-  const modif = showScum
+  const chance = chanceProductive(p);
+  const chanceStr = chance != null ? `, ${Math.round(chance * 100)}%` : "";
+  const ssBadge = ss ? `<span class="modif-val"> ~${fmtNum(ss.erasedPerTick)} t/tick${ssRange}${chanceStr}</span>` : "";
+  // 🔄 sur toutes les plantes
+  const modif = ss
     ? `<span class="tick modif">🔄${ssBadge}</span>` : "";
   const overtake = p.overtake
     ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
