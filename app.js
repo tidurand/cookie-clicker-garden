@@ -119,7 +119,9 @@ function fmtNum(n) {
 // Mécanique réelle (code du jeu) : âge += randomFloor((ageTick + ageTickR*rand) * mult).
 // "mult" = plotBoost × dragonBoost (dragon + sol + voisins). Le gain par tick est ENTIER ;
 // en save/reload on force le gain max = ceil(AT_max * mult).
-// "ticks effacés par tick forcé" = gain_max / gain_moyen − 1.
+// Mécanique réelle : âge += randomFloor((ageTick + ageTickR*rand) * mult).
+// "ticks retirés de l'affichage par tick productif" = baisse du compteur « mûr dans X
+// ticks » (= ceil((MA-âge)/AT_moyen)) quand l'âge prend +1 = 1 / AT_moyen.
 function saveScumGain(p) {
   const r = atRange(p.at);
   if (!r || r.avg === 0) return null;
