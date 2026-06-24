@@ -128,26 +128,28 @@ function saveScumGain(p) {
   const avg = r.avg * growthMult;            // gain d'âge moyen par tick
   const maxGain = Math.ceil(r.max * growthMult); // gain entier max possible (rare)
   if (avg <= 0) return null;
-  // baisse du compteur "mûr dans X ticks" pour chaque +1 d'âge (le cas régulier)
-  const erasedPerTick = 1 / avg;
-  // l'affichage étant entier, il baisse en pratique de floor..ceil de cette moyenne
+  // baisse du compteur "mûr dans X" quand on force le gain d'âge MAX (meilleur reroll)
+  const erasedPerTick = maxGain / avg;
   const erasedMin = Math.floor(erasedPerTick + 1e-9);
   const erasedMax = Math.ceil(erasedPerTick - 1e-9);
   return { maxGain, avg, erasedPerTick, erasedMin, erasedMax };
 }
 
-// probabilité qu'un tick fasse avancer l'affichage (gain d'âge >= 1)
-// gain = randomFloor(raw), raw ~ Uniforme[lo, hi]. P(gain=0) n'arrive que si raw<1.
-function chanceProductive(p) {
+// probabilité d'obtenir le gain d'âge MAX en un tick (la cible du reroll)
+// gain = randomFloor(raw), raw ~ Uniforme[lo, hi] ; maxGain = ceil(hi)
+function maxRerollChance(p) {
   const r = atRange(p.at);
   if (!r) return null;
   const lo = r.min * growthMult, hi = r.max * growthMult;
-  if (lo >= 1) return 1;                 // gagne toujours au moins +1
-  if (hi === lo) return lo;              // valeur fixe (ageTickR=0) : P(+1)=lo
-  const upper = Math.min(hi, 1);
-  const integral = (upper - upper * upper / 2) - (lo - lo * lo / 2);
-  const p0 = integral / (hi - lo);       // P(gain = 0)
-  return 1 - p0;
+  if (hi === lo) {                       // valeur fixe (ageTickR=0)
+    return hi >= 1 ? 1 : hi;             // P d'arrondir vers le haut = frac(hi)=hi si hi<1
+  }
+  const maxGain = Math.ceil(hi);
+  const base = maxGain - 1;              // zone qui peut donner maxGain : raw dans [base, hi]
+  const a = Math.max(lo, base);
+  if (a >= hi) return 0;
+  const integral = ((hi - base) ** 2 - (a - base) ** 2) / 2;
+  return integral / (hi - lo);
 }
 
 function statsHTML(p) {
@@ -160,7 +162,7 @@ function statsHTML(p) {
     : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
   const ss = saveScumGain(p);
   const ssRange = ss && ss.erasedMin !== ss.erasedMax ? ` (${ss.erasedMin}–${ss.erasedMax})` : "";
-  const chance = chanceProductive(p);
+  const chance = maxRerollChance(p);
   const chanceStr = chance != null ? `, ${Math.round(chance * 100)}%` : "";
   const ssBadge = ss ? `<span class="modif-val"> ~${fmtNum(ss.erasedPerTick)} t/tick${ssRange}${chanceStr}</span>` : "";
   // 🔄 sur toutes les plantes
