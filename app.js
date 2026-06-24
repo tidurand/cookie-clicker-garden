@@ -130,7 +130,10 @@ function saveScumGain(p) {
   if (avg <= 0) return null;
   // baisse du compteur "mûr dans X ticks" pour chaque +1 d'âge (le cas régulier)
   const erasedPerTick = 1 / avg;
-  return { maxGain, avg, erasedPerTick };
+  // l'affichage étant entier, il baisse en pratique de floor..ceil de cette moyenne
+  const erasedMin = Math.floor(erasedPerTick + 1e-9);
+  const erasedMax = Math.ceil(erasedPerTick - 1e-9);
+  return { maxGain, avg, erasedPerTick, erasedMin, erasedMax };
 }
 
 function statsHTML(p) {
@@ -142,7 +145,8 @@ function statsHTML(p) {
     ? `<span class="tick immortal" title="Ne meurt jamais">♾️</span>`
     : `<span class="tick life" title="Disparaît ${p.window} ticks après maturité">💀 ${p.window}</span>`;
   const ss = saveScumGain(p);
-  const ssBadge = ss ? `<span class="modif-val"> ~${fmtNum(ss.erasedPerTick)} t/tick</span>` : "";
+  const ssRange = ss && ss.erasedMin !== ss.erasedMax ? ` (${ss.erasedMin}–${ss.erasedMax})` : "";
+  const ssBadge = ss ? `<span class="modif-val"> ~${fmtNum(ss.erasedPerTick)} t/tick${ssRange}</span>` : "";
   // 🔄 affiché si le save/reload fait baisser le compteur d'au moins 2 par tick forcé
   // ET que la plante demande au moins 15 ticks pour mûrir
   const showScum = ss && (p.scumForce || (ss.erasedPerTick >= 2 && p.mature >= 15));
