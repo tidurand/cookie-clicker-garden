@@ -123,11 +123,11 @@ function fmtNum(n) {
 function saveScumGain(p) {
   const r = atRange(p.at);
   if (!r || r.avg === 0) return null;
-  const avg = r.avg * growthMult;            // gain d'âge moyen par tick (avec bonus)
-  const maxGain = Math.ceil(r.max * growthMult); // gain entier max possible en 1 tick
-  if (avg <= 0 || maxGain <= 0) return null;
-  // baisse du compteur "mûr dans X ticks" = ceil((MA-âge)/AT_moyen) quand on force le gain max
-  const erasedPerTick = maxGain / avg;
+  const avg = r.avg * growthMult;            // gain d'âge moyen par tick
+  const maxGain = Math.ceil(r.max * growthMult); // gain entier max possible (rare)
+  if (avg <= 0) return null;
+  // baisse du compteur "mûr dans X ticks" pour chaque +1 d'âge (le cas régulier)
+  const erasedPerTick = 1 / avg;
   return { maxGain, avg, erasedPerTick };
 }
 
