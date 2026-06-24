@@ -15,7 +15,7 @@ const PLANTS = [
     effect: "+1% CpS ; récolte → +30 min de CpS", mutation: "2× Blé du pâtissier (rare)", cost: "45 min de CpS" },
   { en: "Thumbcorn", fr: "Maïspouce", mature: 3, window: 12, modif: false, marker: "", group: 1, checked: true, fungus: false,
     effect: "+2% cookies par clic", mutation: "2× Blé du pâtissier", cost: "5 min de CpS" },
-  { en: "Cronerice", fr: "Mégèriz", mature: 70, window: 64, modif: true, marker: "", group: 1, checked: true, fungus: false,
+  { en: "Cronerice", fr: "Mégèriz", mature: 70, window: 64, modif: true, marker: "", group: 1, checked: true, fungus: false, scumForce: true,
     effect: "+3% CpS des mamies", mutation: "Blé + Maïspouce", cost: "15 min de CpS" },
   { en: "Gildmillet", fr: "Mildoré", mature: 14, window: 23, modif: false, marker: "", group: 1, checked: true, fungus: false,
     effect: "+1% gains cookies dorés, +0,1% durée", mutation: "Mégèriz + Maïspouce", cost: "15 min de CpS" },
