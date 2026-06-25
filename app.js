@@ -252,10 +252,10 @@ function recipeHTML(m, step) {
     : lvl === 1
       ? `<span class="avail-badge soon" title="Les parents sont sur le jardin (au moins un pas encore débloqué) : la mutation peut apparaître">🟡 Sur le jardin</span>`
       : "";
-  // 🔀 : plusieurs façons d'obtenir la plante produite (à côté du résultat)
+  // 🔀 : plusieurs façons d'obtenir la plante produite — clic = petite fenêtre
   const childPlant = BY_EN[m.child];
   const altsBadge = (childPlant && childPlant.alts && childPlant.alts.length)
-    ? `<span class="tick alts">🔀<span class="alts-val"> Façons : ${childPlant.alts.join(" · ")}</span></span>` : "";
+    ? `<span class="tick alts" data-child="${m.child}" tabindex="0" role="button" title="Voir les façons d'obtenir cette plante">🔀</span>` : "";
   return `<div class="recipe ${availClass}" data-child="${m.child}">
     ${stepBadge}${availBadge}
     <div class="parents">${parents}</div>
@@ -338,6 +338,26 @@ function bindNodes(scope) {
       showMutationsFor(badge.closest(".node").dataset.en);
     });
   });
+  // clic sur le badge 🔀 -> fenêtre des façons d'obtenir la plante
+  scope.querySelectorAll(".tick.alts[data-child]").forEach(badge => {
+    const open = () => showAltsFor(badge.dataset.child);
+    badge.addEventListener("click", e => { e.stopPropagation(); open(); });
+    badge.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); }
+    });
+  });
+}
+
+// --- fenêtre : façons d'obtenir une plante (badge 🔀) ---
+function showAltsFor(en) {
+  const p = BY_EN[en];
+  document.getElementById("mm-title").textContent = `🔀 Façons d'obtenir ${p ? p.fr : en}`;
+  const list = document.getElementById("mm-list");
+  const alts = (p && p.alts) || [];
+  list.innerHTML = alts.length
+    ? alts.map(a => `<li><span class="mm-recipe">${a}</span></li>`).join("")
+    : `<li class="mm-empty">Aucune autre façon connue.</li>`;
+  document.getElementById("mutation-modal").classList.remove("hidden");
 }
 
 // --- fenêtre : mutations possibles d'une plante ---
