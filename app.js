@@ -170,10 +170,7 @@ function statsHTML(p) {
     ? `<span class="tick modif">🔄${ssBadge}</span>` : "";
   const overtake = p.overtake
     ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
-  // 🔀 : plusieurs façons d'obtenir la plante (révélées au survol)
-  const alts = (p.alts && p.alts.length)
-    ? `<span class="tick alts">🔀<span class="alts-val"> Façons : ${p.alts.join(" · ")}</span></span>` : "";
-  return `<span class="ticks">${mature}${life}${modif}${overtake}${alts}</span>`;
+  return `<span class="ticks">${mature}${life}${modif}${overtake}</span>`;
 }
 
 // pastille "plante" (parent ou enfant) cliquable comme case à cocher
@@ -255,6 +252,10 @@ function recipeHTML(m, step) {
     : lvl === 1
       ? `<span class="avail-badge soon" title="Les parents sont sur le jardin (au moins un pas encore débloqué) : la mutation peut apparaître">🟡 Sur le jardin</span>`
       : "";
+  // 🔀 : plusieurs façons d'obtenir la plante produite (à côté du résultat)
+  const childPlant = BY_EN[m.child];
+  const altsBadge = (childPlant && childPlant.alts && childPlant.alts.length)
+    ? `<span class="tick alts">🔀<span class="alts-val"> Façons : ${childPlant.alts.join(" · ")}</span></span>` : "";
   return `<div class="recipe ${availClass}" data-child="${m.child}">
     ${stepBadge}${availBadge}
     <div class="parents">${parents}</div>
@@ -263,6 +264,7 @@ function recipeHTML(m, step) {
       ${chanceLabel(m)}
     </div>
     <div class="child">${nodeHTML(m.child, { role: "child" })}</div>
+    ${altsBadge}
     ${note}
   </div>`;
 }
