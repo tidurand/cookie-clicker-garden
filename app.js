@@ -170,7 +170,10 @@ function statsHTML(p) {
     ? `<span class="tick modif">🔄${ssBadge}</span>` : "";
   const overtake = p.overtake
     ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
-  return `<span class="ticks">${mature}${life}${modif}${overtake}</span>`;
+  // 🔀 : plusieurs façons d'obtenir la plante (révélées au survol)
+  const alts = (p.alts && p.alts.length)
+    ? `<span class="tick alts">🔀<span class="alts-val"> Façons : ${p.alts.join(" · ")}</span></span>` : "";
+  return `<span class="ticks">${mature}${life}${modif}${overtake}${alts}</span>`;
 }
 
 // pastille "plante" (parent ou enfant) cliquable comme case à cocher
