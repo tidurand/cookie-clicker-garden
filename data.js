@@ -185,6 +185,9 @@ const MUTATIONS = [
     parents: [{ en: "Queenbeet", qty: 2 }] },
   { child: "Shriekbulb",      row: 9, chance: 0.005,
     parents: [{ en: "Duketater", qty: 3 }] },
+  { child: "Shriekbulb",      row: 9, chance: 0.001,
+    parents: [{ en: "Queenbeet", qty: 5 }],
+    note: "5× Bettereine mûres autour" },
 
   // ===== Bettereine juteuse (8× Bettereine autour) =====
   { child: "Juicy Queenbeet", row: 10, chance: 0.001,
