@@ -9,9 +9,9 @@
 
 const PLANTS = [
   // ---------- GROUPE 1 ----------
-  { en: "Baker's Wheat", fr: "Blé du Pâtissier", mature: 5, window: 8, modif: false, marker: "", group: 1, checked: true, fungus: false,
+  { en: "Baker's Wheat", fr: "Blé du Pâtissier", mature: 5, window: 8, modif: false, marker: "", group: 1, checked: true, fungus: false, gardenCookie: true,
     effect: "+1% CpS", mutation: "Plante de départ", cost: "1 min de CpS" },
-  { en: "Bakeberry", fr: "Pâtisetille", mature: 32, window: 35, modif: false, marker: "", group: 1, checked: true, fungus: false,
+  { en: "Bakeberry", fr: "Pâtisetille", mature: 32, window: 35, modif: false, marker: "", group: 1, checked: true, fungus: false, gardenCookie: true,
     effect: "+1% CpS ; récolte → +30 min de CpS", mutation: "2× Blé du pâtissier (rare)", cost: "45 min de CpS" },
   { en: "Thumbcorn", fr: "Maïspouce", mature: 3, window: 12, modif: false, marker: "", group: 1, checked: true, fungus: false,
     effect: "+2% cookies par clic", mutation: "2× Blé du pâtissier", cost: "5 min de CpS", alts: ["2× Blé du Pâtissier (5%)", "2× Mégèriz (2%)"] },
@@ -23,7 +23,7 @@ const PLANTS = [
     effect: "+1% fréquence cookies dorés", mutation: "Blé + Gildmillet", cost: "25 min de CpS" },
   { en: "Shimmerlily", fr: "Lys Irisé", mature: 9, window: 4, modif: false, marker: "", group: 1, checked: true, fungus: false,
     effect: "+1% gains / fréquence / drops cookies dorés", mutation: "Trèfle + Gildmillet", cost: "60 min de CpS" },
-  { en: "Elderwort", fr: "Odeurweiss", mature: 156, window: -1, modif: true, marker: "", group: 1, checked: true, fungus: false, scumForce: true,
+  { en: "Elderwort", fr: "Odeurweiss", mature: 156, window: -1, modif: true, marker: "", group: 1, checked: true, fungus: false, scumForce: true, gardenCookie: true,
     effect: "+1% gains/fréquence wrath, +1% CpS mamies ; vieillit l'entourage de 3%", mutation: "Lys Irisé + Mégèriz", cost: "180 min de CpS", alts: ["Lys Irisé + Mégèriz (1%)", "Ridegibier + Mégèriz (0,2%)"] },
   { en: "Ichorpuff", fr: "Vesse d'Ichor", mature: 20, window: 38, modif: false, marker: "²", group: 1, checked: true, fungus: true,
     effect: "L'entourage vieillit 2× moins vite, mais 50% moins efficace", mutation: "Odeurweiss + Sporemiette", cost: "120 min de CpS" },
@@ -55,7 +55,7 @@ const PLANTS = [
     effect: "Bâtiments 0,2% moins chers", mutation: "Sporemiette + Lys Irisé", cost: "40 min de CpS" },
   { en: "Doughshroom", fr: "Champipâte", mature: 41, window: 9, modif: false, marker: "²", group: 2, checked: true, fungus: true, overtake: true,
     effect: "Explose en jusqu'à 5 min de CpS ; peut envahir", mutation: "2× Sporemiette", cost: "100 min de CpS" },
-  { en: "Green Rot", fr: "Vertiture", mature: 4, window: 2, modif: false, marker: "³", group: 2, checked: true, fungus: true,
+  { en: "Green Rot", fr: "Vertiture", mature: 4, window: 2, modif: false, marker: "³", group: 2, checked: true, fungus: true, gardenCookie: true,
     effect: "+0,5% durée dorés, +1% fréquence, +1% drops", mutation: "Mildou blanc + Trèfle", cost: "60 min de CpS" },
   { en: "Keenmoss", fr: "Poussemousse", mature: 10, window: 6, modif: false, marker: "¹", group: 2, checked: true, fungus: false,
     effect: "+3% drops aléatoires", mutation: "Vertiture + Moisissure brune", cost: "50 min de CpS" },
@@ -71,7 +71,7 @@ const PLANTS = [
     effect: "Entourage 20% plus efficace, -2% CpS", mutation: "2× Moustafleur", cost: "40 min de CpS" },
   { en: "Chimerose", fr: "Tinterose", mature: 17, window: 41, modif: false, marker: "", group: 2, checked: true, fungus: false,
     effect: "+1% gains / fréquence rennes", mutation: "Lys Irisé + Moustafleur", cost: "15 min de CpS" },
-  { en: "Duketater", fr: "Ducdeterre", mature: 201, window: 22, modif: true, marker: "", group: 2, checked: false, fungus: false,
+  { en: "Duketater", fr: "Ducdeterre", mature: 201, window: 22, modif: true, marker: "", group: 2, checked: false, fungus: false, gardenCookie: true,
     effect: "Récolte → +2 h de CpS", mutation: "2× Bettereine", cost: "480 min de CpS" },
   { en: "Shriekbulb", fr: "Burburleur", mature: 17, window: 12, modif: false, marker: "", group: 2, checked: true, fungus: false,
     effect: "-2% CpS, entourage 5% moins efficace", mutation: "Ducdeterre / Champipâte / Odeurweiss", cost: "60 min de CpS", alts: ["3× Ducdeterre (0,5%)", "4× Champipâte (0,2%)", "5× Bettereine (0,1%)", "5× Odeurweiss (0,1%)", "Ridegibier + Odeurweiss (0,1%)"] },
