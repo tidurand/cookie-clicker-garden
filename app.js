@@ -182,7 +182,7 @@ function statsHTML(p) {
     ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
   const cookie = p.gardenCookie
     ? `<span class="tick cookie ${hasCookie(p.en) ? "got" : "notgot"}" data-cookie="${p.en}" tabindex="0" role="button"
-        title="Cookie de jardin (${p.gardenCookie} de chance) — ${hasCookie(p.en) ? "obtenu, clique pour retirer" : "pas encore obtenu, clique si tu l'as"}">🍪</span>` : "";
+        title="Cookie de jardin — clique si tu l'as">🍪<span class="cookie-val"> ${p.gardenCookie}</span></span>` : "";
   return `<span class="ticks">${mature}${life}${modif}${overtake}${cookie}</span>`;
 }
 

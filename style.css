@@ -414,6 +414,9 @@ main {
 .tick.cookie.got { background: var(--green); color: #fff; }            /* obtenu (vert) */
 .tick.cookie.notgot { background: #9a8a6e; color: #f6ecd9; filter: grayscale(.4); } /* pas obtenu (gris) */
 .tick.cookie:hover { filter: brightness(1.1); }
+/* le % n'apparaît qu'au survol */
+.cookie-val { display: none; }
+.tick.cookie:hover .cookie-val, .tick.cookie:focus .cookie-val { display: inline; }
 .tick.alts { background: #e0d4f0; color: #4a2e7a; cursor: pointer; }
 .tick.alts:hover { filter: brightness(1.08); }
 .node.locked .tick { opacity: .8; }
