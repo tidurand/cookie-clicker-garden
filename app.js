@@ -171,7 +171,7 @@ function statsHTML(p) {
   const overtake = p.overtake
     ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
   const cookie = p.gardenCookie
-    ? `<span class="tick cookie" title="Peut donner un cookie de jardin (petit bonus)">🍪</span>` : "";
+    ? `<span class="tick cookie" title="Peut donner un cookie de jardin (petit bonus) — ${p.gardenCookie} de chance">🍪</span>` : "";
   return `<span class="ticks">${mature}${life}${modif}${overtake}${cookie}</span>`;
 }
 
