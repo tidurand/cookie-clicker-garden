@@ -86,6 +86,16 @@ let currentSearch = "";
 const GROWTH_KEY = "cc-garden-growth-mult";
 let growthMult = parseFloat(localStorage.getItem(GROWTH_KEY)) || 1;
 
+// cookies de jardin : état PERMANENT (gardé toute l'aventure), indépendant du jardin/reset
+const COOKIE_KEY = "cc-garden-cookies";
+function loadCookies() {
+  try { const s = JSON.parse(localStorage.getItem(COOKIE_KEY)); if (s && typeof s === "object") return s; } catch (_) {}
+  return {};
+}
+let cookieState = loadCookies();
+function saveCookies() { localStorage.setItem(COOKIE_KEY, JSON.stringify(cookieState)); }
+function hasCookie(en) { return !!cookieState[en]; }
+
 // helpers d'état
 function stateOf(en) { return checkedState[en] || 0; }
 function isUnlocked(en) { return stateOf(en) === 2; }
@@ -171,7 +181,8 @@ function statsHTML(p) {
   const overtake = p.overtake
     ? `<span class="tick overtake" title="Peut envahir / submerger les plantes voisines">⚠️</span>` : "";
   const cookie = p.gardenCookie
-    ? `<span class="tick cookie" title="Peut donner un cookie de jardin (petit bonus) — ${p.gardenCookie} de chance">🍪</span>` : "";
+    ? `<span class="tick cookie ${hasCookie(p.en) ? "got" : "notgot"}" data-cookie="${p.en}" tabindex="0" role="button"
+        title="Cookie de jardin (${p.gardenCookie} de chance) — ${hasCookie(p.en) ? "obtenu, clique pour retirer" : "pas encore obtenu, clique si tu l'as"}">🍪</span>` : "";
   return `<span class="ticks">${mature}${life}${modif}${overtake}${cookie}</span>`;
 }
 
@@ -338,6 +349,19 @@ function bindNodes(scope) {
     badge.addEventListener("click", e => {
       e.stopPropagation();
       showMutationsFor(badge.closest(".node").dataset.en);
+    });
+  });
+  // clic sur le badge 🍪 -> bascule "obtenu / pas obtenu" (état permanent, hors reset)
+  scope.querySelectorAll(".tick.cookie[data-cookie]").forEach(badge => {
+    const toggle = () => {
+      const en = badge.dataset.cookie;
+      cookieState[en] = !cookieState[en];
+      saveCookies();
+      render();
+    };
+    badge.addEventListener("click", e => { e.stopPropagation(); toggle(); });
+    badge.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
     });
   });
   // clic sur le badge 🔀 -> fenêtre des façons d'obtenir la plante

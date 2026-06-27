@@ -410,7 +410,10 @@ main {
 .modif-val { display: none; }
 .tick.modif:hover .modif-val, .tick.modif:focus .modif-val { display: inline; }
 .tick.overtake { background: #f6d9d0; color: #7a2912; }
-.tick.cookie { background: #f3e0c0; color: #6b4a12; }
+.tick.cookie { cursor: pointer; }
+.tick.cookie.got { background: var(--green); color: #fff; }            /* obtenu (vert) */
+.tick.cookie.notgot { background: #9a8a6e; color: #f6ecd9; filter: grayscale(.4); } /* pas obtenu (gris) */
+.tick.cookie:hover { filter: brightness(1.1); }
 .tick.alts { background: #e0d4f0; color: #4a2e7a; cursor: pointer; }
 .tick.alts:hover { filter: brightness(1.08); }
 .node.locked .tick { opacity: .8; }
