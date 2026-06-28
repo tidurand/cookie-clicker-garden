@@ -407,11 +407,13 @@ function showMutationsFor(en) {
       const childImg = BY_EN[m.child]
         ? `<img class="mm-img" src="${plantImg(m.child)}" alt="" width="22" height="22" loading="lazy">` : "";
       const chance = m.chance == null ? "à la récolte" : formatPct(m.chance);
-      const done = isUnlocked(m.child);
+      const st = stateOf(m.child);
+      const done = st === 2;
+      const stateIcon = st === 2 ? "🟢" : st === 1 ? "🟡" : "⚪";
       return `<li class="${done ? "mm-done" : ""}">
         <span class="mm-recipe">${parents} → ${childImg}<b>${child}</b></span>
         <span class="mm-chance">${chance}</span>
-        <span class="mm-state">${done ? "✅" : "⬜"}</span>
+        <span class="mm-state">${stateIcon}</span>
       </li>`;
     }).join("");
   }
